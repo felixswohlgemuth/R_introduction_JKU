@@ -1,0 +1,23 @@
+---
+title: "Datenanalyse mit R"
+subtitle: "#3 Daten und Datentypen"
+author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
+institute: "gespol, JKU"
+date: "19.03.2020"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse, middle 
+### Datenanalyse mit R
+# # 3 Daten und Datentypen
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 19.03.2020
+![logo](figures/gespol_logo.png)
+---
+

@@ -1,9 +1,9 @@
 ---
 title: "Datenanalyse mit R"
-subtitle: "erste Schritte mit RStudio"
+subtitle: "#2 erste Schritte mit RStudio"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
-date: "11.03.2020"
+date: "12.03.2020"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -15,9 +15,9 @@ output:
 ---
 class: inverse, middle 
 ### Datenanalyse mit R
-# Erste Schritte mit RStudio
+# #2 Erste Schritte mit RStudio
 ### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
-### 11.03.2020
+### 12.03.2020
 ![logo](figures/gespol_logo.png)
 ---
 # Was haben wir letzte Woche gelernt?
