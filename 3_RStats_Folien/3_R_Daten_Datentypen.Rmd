@@ -20,4 +20,65 @@ class: inverse, middle
 ### 19.03.2020
 ![logo](figures/gespol_logo.png)
 ---
+# Was haben wir letzte Woche gelernt?
+**Variablen** sind Objekte in R in denen einzelne Werte oder auch eine Reihe von Werten gespeichert werden können
+* Die Zuteilung eines Wertes zu einer Variable in R geschieht mit `<-`
+* Bei mehreren Werten müssen diese mit `c()` verbunden werden, um dann einer Variable zugeteilt zu werden (zB:  `x <- c(1,2,3,4)` )
+* Das ist ein Vektor mit der Länge 4
+* Die Vektoren können in Rechnungen wie einzelne Werte verwendet werden (zB: `x * 2` hier werden alle Werte in x mit 2 multipliziert)
+* Wenn zwei Vektoren gleicher länger multipliziert oder summiert werden, wird der erste Wert mit dem ersten Wert verechnet, der zweite Wert mit dem zweiten Wert usw.
+```{r vector, echo=TRUE}
+x <- c(1,2,3,4)
+y <- c(10,9,8,7)
+
+x * y
+```
+---
+# Was haben wir letzte Woche gelernt?
+* Vektoren unterschiedlicher Länge können nicht verechnet werden
+* Außer Vektoren mit der Länge 1 und wenn die Länge des einen Vektors ein Vielfaches der Länge des anderen Vektors ist
+```{r vector 2, echo=TRUE}
+z <- c(5,6,12)
+q <- 12
+r <- c(23, 34, 33, 2, 6, 9)
+
+x + z
+y + q
+
+z + r
+```
+---
+# Was haben wir letzte Woche gelernt?
+**Funktionen** fassen mehrere Schritte einer Berechnung zusammen und sind in R Teile eines Paketes 
+* die `sum()` Funktion berechnet zB die Summe eines Vektors, dazu geben sie den Namen des Vektors in den Klammern an `mean(r)` `sum(r)`
+```{r function, echo=TRUE}
+sum(r)
+```
+---
+# Was haben wir letzte Woche gelernt?
+* Mit der Funktion help() können sie die Erklärung für die Funktion in RStudio laden
+* Hier wird auch die Syntax der Funktion erklärt und welche Grundeinstellung die Funktion hat
+```{r function 2, echo=TRUE}
+help(sum)
+```
+**Description**: sum returns the sum of all the values present in its arguments <br>
+**Usage**: sum(..., na.rm = FALSE) <br>
+**Arguments** <br>
+*...*	numeric or complex or logical vectors <br>
+*na.rm logical* Should missing values (including NaN) be removed? <br>
+
+* `sum()` hat zB die Grundeinstellung, dass fehlende Werte (NA) bei der Summenberechnung nicht entfernt werden
+* Sie können die Einstellung in der Anwendung der Funktion ändern (zB: `sum(r, na.rm = TRUE)` da aber in r keine fehlende Werte sind, hat das kein Effekt)
+---
+# Was haben wir letzte Woche gelernt?
+**Pakete** sind Bündel von Funktionen (teilweise inklusive Daten) und erweitern die Grundfunktionen von R. Sie werden von den Nutzer_innen erstellt und auf CRAN kostenfrei veröffentlicht.
+* Pakete können von CRAN mit der Funktion `install.packages("PAKETNAME")` heruntergeladen und installiert werden
+* Installieren müssen Sie das Paket nur einmal
+* Mit `library(PAKTENAME)` wird das Paket zur Verwendung geladen
+* Sie müssen das Paket einmal pro Skript laden, wenn sie eine Funktion daraus in Ihrem Skript verwenden
+---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das Forum auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!
+![moodle_forum](figures/forum_moodle.png)
+---
 
