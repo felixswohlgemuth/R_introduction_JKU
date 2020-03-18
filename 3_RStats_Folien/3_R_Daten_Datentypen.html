@@ -22,7 +22,38 @@ class: inverse, middle
 * Die Zuteilung eines Wertes zu einer Variable in R geschieht mit `&lt;-`
 * Bei mehreren Werten müssen diese mit `c()` verbunden werden, um dann einer Variable zugeteilt zu werden (zB:  `x &lt;- c(1,2,3,4)` )
 * Das ist ein Vektor mit der Länge 4
+
+```r
+x &lt;- c(1,2,3,4)
+
+length(x)
+```
+
+```
+## [1] 4
+```
+---
+# Was haben wir letzte Woche gelernt?
 * Die Vektoren können in Rechnungen wie einzelne Werte verwendet werden (zB: `x * 2` hier werden alle Werte in x mit 2 multipliziert)
+
+```r
+x
+```
+
+```
+## [1] 1 2 3 4
+```
+
+```r
+x * 2
+```
+
+```
+## [1] 2 4 6 8
+```
+(Wenn Sie den Inhalt eines Vektors wissen möchten, dann geben Sie einfach den Namen des Vektors in die Konsole ein oder führen Sie den Namen im Skript aus zB `x` wie oben im Skript)
+---
+# Was haben wir letzte Woche gelernt?
 * Wenn zwei Vektoren gleicher länger multipliziert oder summiert werden, wird der erste Wert mit dem ersten Wert verechnet, der zweite Wert mit dem zweiten Wert usw.
 
 ```r
@@ -35,16 +66,31 @@ x * y
 ```
 ## [1] 10 18 24 28
 ```
+
+```r
+2 * (x - y)
+```
+
+```
+## [1] -18 -14 -10  -6
+```
 ---
 # Was haben wir letzte Woche gelernt?
-* Vektoren unterschiedlicher Länge können nicht verechnet werden
-* Außer Vektoren mit der Länge 1 und wenn die Länge des einen Vektors ein Vielfaches der Länge des anderen Vektors ist
+* Vektoren unterschiedlicher Länge können nicht einfach so verechnet werden
+* Bei unterschiedlicher Länger nimmt R nachdem alle Werte des kürzeren Vektors verrechnet sind wieder den ersten Wert, dann den zweiten Wert usw. 
 
 ```r
 z &lt;- c(5,6,12)
 q &lt;- 12
 r &lt;- c(23, 34, 33, 2, 6, 9)
+x
+```
 
+```
+## [1] 1 2 3 4
+```
+
+```r
 x + z
 ```
 
@@ -55,13 +101,18 @@ x + z
 ```
 ## [1]  6  8 15  9
 ```
+---
+# Was haben wir letzte Woche gelernt?
+Außnahmen:
+* Vektoren mit der Länge 1 
+* wenn die Länge des einen Vektors ein Vielfaches der Länge des anderen Vektors ist
 
 ```r
-y + q
+z + q
 ```
 
 ```
-## [1] 22 21 20 19
+## [1] 17 18 24
 ```
 
 ```r
@@ -73,8 +124,9 @@ z + r
 ```
 ---
 # Was haben wir letzte Woche gelernt?
-**Funktionen** fassen mehrere Schritte einer Berechnung zusammen und sind in R Teile eines Paketes 
-* die `sum()` Funktion berechnet zB die Summe eines Vektors, dazu geben sie den Namen des Vektors in den Klammern an `mean(r)` `sum(r)`
+**Funktionen** fassen mehrere Schritte einer Berechnung zusammen
+* Funktionen sind meist Teile eines Paketes oder werden von Ihnen selbst erstellt
+* die `sum()` Funktion berechnet zB die Summe eines Vektors, dazu geben sie den Namen des Vektors zwischen den Klammern an
 
 ```r
 sum(r)
@@ -83,10 +135,19 @@ sum(r)
 ```
 ## [1] 107
 ```
+* `length()` gibt die die Länge eines Vektor aus
+
+```r
+length(x)
+```
+
+```
+## [1] 4
+```
 ---
 # Was haben wir letzte Woche gelernt?
-* Mit der Funktion help() können sie die Erklärung für die Funktion in RStudio laden
-* Hier wird auch die Syntax der Funktion erklärt und welche Grundeinstellung die Funktion hat
+* Mit der Funktion `help()` wird die Erklärung für der Funktion in RStudio angezeigt
+* In der Erklärung wird auch die Syntax der Funktion erklärt und welche Grundeinstellung die Funktion hat
 
 ```r
 help(sum)
@@ -97,20 +158,248 @@ help(sum)
 *...*	numeric or complex or logical vectors &lt;br&gt;
 *na.rm logical* Should missing values (including NaN) be removed? &lt;br&gt;
 
-* `sum()` hat zB die Grundeinstellung, dass fehlende Werte (NA) bei der Summenberechnung nicht entfernt werden
-* Sie können die Einstellung in der Anwendung der Funktion ändern (zB: `sum(r, na.rm = TRUE)` da aber in r keine fehlende Werte sind, hat das kein Effekt)
+* `sum()` hat die Grundeinstellung, dass fehlende Werte (NA) bei der Summenberechnung nicht entfernt werden
+* Sie können die Einstellung bei Verwendung der Funktion ändern (zB: `sum(r, na.rm = TRUE)` da aber in r keine fehlende Werte sind, hat das kein Effekt)
 ---
 # Was haben wir letzte Woche gelernt?
 **Pakete** sind Bündel von Funktionen (teilweise inklusive Daten) und erweitern die Grundfunktionen von R. Sie werden von den Nutzer_innen erstellt und auf CRAN kostenfrei veröffentlicht.
 * Pakete können von CRAN mit der Funktion `install.packages("PAKETNAME")` heruntergeladen und installiert werden
 * Installieren müssen Sie das Paket nur einmal
 * Mit `library(PAKTENAME)` wird das Paket zur Verwendung geladen
-* Sie müssen das Paket einmal pro Skript laden, wenn sie eine Funktion daraus in Ihrem Skript verwenden
+* Zur Verwendung der Funktionen eines Paketes müssen Sie das Paket am Anfang des Skriptes laden
 ---
 class: center, middle
 Falls Sie noch Fragen haben, nutzen Sie das Forum auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!
 ![moodle_forum](figures/forum_moodle.png)
 ---
+# Objektklassen in R 
+R kann mit einer Vielzahl von verschiedenen Objekttypen arbeiten  
+* **reele Zahlen (numeric)**
+
+```r
+menue_1 &lt;- 5.80
+class(menue_1)
+```
+
+```
+## [1] "numeric"
+```
+R ist es egal ob der Vektor einen Wert oder mehrere Werte hat
+
+```r
+mensa_preis &lt;- c(4.30, 5.80, 2.90, 8.10)
+class(mensa_preis)
+```
+
+```
+## [1] "numeric"
+```
+---
+# Objektklassen in R
+* **ganze Zahlen** (integer)
+
+```r
+# ganze Zahlen werden R mit L dargestellt
+ganze_zahlen &lt;- c(-8L, 35L, -44L)
+class(ganze_zahlen)
+```
+
+```
+## [1] "integer"
+```
+---
+# Objektklassen in R
+Mit beiden numerischen Objekttypen kann R rechnen 
+
+```r
+mean(mensa_preis)
+```
+
+```
+## [1] 5.275
+```
+
+```r
+mean(ganze_zahlen)
+```
+
+```
+## [1] -5.666667
+```
+---
+# Objektklassen in R
+Aber es gibt nicht nur numerischen Objektklassen
+* Variablen können auch Wörter oder **Texte** (character) enthalten
+
+```r
+# Text wird in R mit " " dargestellt
+teacher &lt;- c("Tobias Wiß", "Carmen Walenta", "Felix Wohlgemuth")
+class(teacher)
+```
+
+```
+## [1] "character"
+```
+---
+# Objektklassen in R
+* R kann aber auch mit den **logischen** Ausdrücken TRUE und FALSE arbeiten
+
+```r
+# sechs mal gewürfelt mit zwei Würfel
+# hab ich bei dem Wurf einen Pasch gewürfelt?
+pasch &lt;- c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE)
+class(pasch)
+```
+
+```
+## [1] "logical"
+```
+---
+# Objektklassen in R
+Auch mit nicht-numerischen Werten kann man in R rechnen
+
+```r
+# Gibt es eine/n Dozent*in mit dem Namen Felix Wohlgemuth?
+teacher == "Felix Wohlgemuth"
+```
+
+```
+## [1] FALSE FALSE  TRUE
+```
+
+```r
+# Wie lang sind die Namen der Lehrenden?
+nchar(teacher) 
+```
+
+```
+## [1] 10 14 16
+```
+
+```r
+# Leerzeichen sind auch Zeichen
+```
+---
+# Objektklassen in R
+
+```r
+# wie of habe ich einen Pasch gewürfelt?
+sum(pasch)
+```
+
+```
+## [1] 4
+```
+
+```r
+# bei welchen Würfen hab ich einen Pasch gewürfelt
+which(pasch == TRUE)
+```
+
+```
+## [1] 1 3 4 6
+```
+
+```r
+# bei welchen Würfen hab ich keinen Pasch gewürfelt
+which(pasch == FALSE)
+```
+
+```
+## [1] 2 5
+```
+---
+# Objektklassen in R
+Bisher hatten wir nur Vektoren mit einer Sorte von Werten, aber in Vektoren können auch Werte unterschiedlicher Klassen gespeichert werden
+
+```r
+# ein Vektor der den Namen des Kurses, die LVA-Nummer
+# und die Anzahl der Studierende enthält
+kurs_fampol &lt;- c("VU Politikfelder – Familienpolitik", 229216, 35)
+class(kurs_fampol)
+```
+
+```
+## [1] "character"
+```
+Die Klasse des ganzen Vektors ist "character" also ein Text, obwohl die einzelne Elemente eigentlich "character" oder "numeric" wären
+
+```r
+class("VU Politikfelder - Familienpolitik")
+```
+
+```
+## [1] "character"
+```
+
+```r
+class(c(229216, 35))
+```
+
+```
+## [1] "numeric"
+```
+---
+# Datentypen in R
+Bisher haben wir mit dem Datentyp "Vektor" mt unterschiedlicher Längern und Werter unterschiedlicher Klassen gearbeitet. R kennt aber mehrere Datentypen. 
+
+Folgende Datentypen gibt es in R:
+* Vektoren
+* Matrizen
+* Arrays
+* Dataframes
+* Listen
+
+Wir werden nur mit **Vektoren** und **Dataframes** arbeiten. 
+---
+# Datentypen in R
+**Vektoren** sind eigentlich eine geordnete Folge von Werten und können entweder aus einer Sorte von Klassen von Werten oder gemischten Klassen von Werten bestehen.
+
+```r
+# der Preis des menue_1 ist ein numerischer Vektor mit einem Wert
+# also der Länge 1
+str(menue_1)
+```
+
+```
+##  num 5.8
+```
+
+```r
+# die Aufzeichnung der Mensapreise ist ein numerischer Vektor 
+# mit mehreren Werten der Länge 4
+str(mensa_preis)
+```
+
+```
+##  num [1:4] 4.3 5.8 2.9 8.1
+```
+---
+# Datentypen in R
+
+```r
+# meine Aufzeichnung über meine Paschwürfe sind ein Vektor mit
+# logischen Werten und der Länge 6
+str(pasch)
+```
+
+```
+##  logi [1:6] TRUE FALSE TRUE TRUE FALSE TRUE
+```
+
+```r
+# da Vektoren geordnet sind, kann ich die Position 
+# der Päsche abfragen
+which(pasch == TRUE)
+```
+
+```
+## [1] 1 3 4 6
+```
+Sortenreine Vektoren (atomare Vektoren) sind die Basis der meisten Datentypen in R. 
+---
+# Datentypen in R
+**Faktoren** sind Vektoren die nur vorab festgelegte Elemente speichern. Für R sind Faktoren reine Vektoren mit ganzen Zahlen und jeder ganzen Zahl ist ein Text zugeordnet. Da ganze Zahlen gereiht werden können, werden für ordinal skalierte Variablen Faktoren verwendet.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
