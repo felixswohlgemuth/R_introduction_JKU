@@ -21,9 +21,9 @@ class: inverse, middle
 ![logo](figures/gespol_logo.png)
 ---
 # Was haben wir letzte Woche gelernt?
-**Variablen** sind Objekte in R in denen einzelne Werte oder auch eine Reihe von Werten gespeichert werden können
-* Die Zuteilung eines Wertes zu einer Variable in R geschieht mit `<-`
-* Bei mehreren Werten müssen diese mit `c()` verbunden werden, um dann einer Variable zugeteilt zu werden (zB:  `x <- c(1,2,3,4)` )
+**Variablen** sind Objekte in denen einzelne Werte oder auch eine Reihe von Werten gespeichert werden können
+* Die Zuteilung eines Wertes zu einer Variable geschieht mit `<-`
+* Bei mehreren Werten müssen diese mit `c()` verbunden werden, um dann einer Variable zugeteilt zu werden, zB:  `x <- c(1,2,3,4)`
 * Das ist ein Vektor mit der Länge 4
 ```{r vector1, echo=TRUE}
 x <- c(1,2,3,4)
@@ -32,12 +32,13 @@ length(x)
 ```
 ---
 # Was haben wir letzte Woche gelernt?
-* Die Vektoren können in Rechnungen wie einzelne Werte verwendet werden (zB: `x * 2` hier werden alle Werte in x mit 2 multipliziert)
+* Vektoren können in Rechnungen wie einzelne Werte verwendet werden.  
+zB: `x * 2` hier werden alle Werte in x mit 2 multipliziert
 ```{r vector2, echo=TRUE}
 x
 x * 2
 ```
-(Wenn Sie den Inhalt eines Vektors wissen möchten, dann geben Sie einfach den Namen des Vektors in die Konsole ein oder führen Sie den Namen im Skript aus zB `x` wie oben im Skript)
+(Wenn Sie den Inhalt eines Vektors wissen möchten, dann geben Sie einfach den Namen des Vektors in die Konsole ein oder führen Sie den Namen im Skript aus)
 ---
 # Was haben wir letzte Woche gelernt?
 * Wenn zwei Vektoren gleicher länger multipliziert oder summiert werden, wird der erste Wert mit dem ersten Wert verechnet, der zweite Wert mit dem zweiten Wert usw.
@@ -52,7 +53,7 @@ x * y
 ---
 # Was haben wir letzte Woche gelernt?
 * Vektoren unterschiedlicher Länge können nicht einfach so verechnet werden
-* Bei unterschiedlicher Länger nimmt R nachdem alle Werte des kürzeren Vektors verrechnet sind wieder den ersten Wert, dann den zweiten Wert usw. 
+* Bei unterschiedlicher Länger verwendet R nachdem alle Werte des kürzeren Vektors verrechnet sind wieder den ersten Wert, dann den zweiten Wert usw. 
 ```{r vector4, echo=TRUE}
 z <- c(5,6,12)
 q <- 12
@@ -72,8 +73,8 @@ z + r
 ---
 # Was haben wir letzte Woche gelernt?
 **Funktionen** fassen mehrere Schritte einer Berechnung zusammen
-* Funktionen sind meist Teile eines Paketes oder werden von Ihnen selbst erstellt
-* die `sum()` Funktion berechnet zB die Summe eines Vektors, dazu geben sie den Namen des Vektors zwischen den Klammern an
+* Funktionen sind meist Teile eines Paketes
+* zB berechnet die `sum()` Funktion die Summe eines Vektors, dazu geben sie den Namen des Vektors zwischen den Klammern an
 ```{r function1, echo=TRUE}
 sum(r)
 ```
@@ -83,7 +84,7 @@ length(x)
 ```
 ---
 # Was haben wir letzte Woche gelernt?
-* Mit der Funktion `help()` wird die Erklärung für der Funktion in RStudio angezeigt
+* Mit der Funktion `help()` wird die Erklärung der Funktion in RStudio angezeigt
 * In der Erklärung wird auch die Syntax der Funktion erklärt und welche Grundeinstellung die Funktion hat
 ```{r function 2, echo=TRUE, eval=FALSE}
 help(sum)
@@ -95,7 +96,8 @@ help(sum)
 *na.rm logical* Should missing values (including NaN) be removed? <br>
 
 * `sum()` hat die Grundeinstellung, dass fehlende Werte (NA) bei der Summenberechnung nicht entfernt werden
-* Sie können die Einstellung bei Verwendung der Funktion ändern (zB: `sum(r, na.rm = TRUE)` da aber in r keine fehlende Werte sind, hat das kein Effekt)
+* Sie können die Einstellung bei Verwendung der Funktion ändern  
+zB `sum(r, na.rm = TRUE)` da aber in `r` keine fehlende Werte sind, hat das kein Effekt
 ---
 # Was haben wir letzte Woche gelernt?
 **Pakete** sind Bündel von Funktionen (teilweise inklusive Daten) und erweitern die Grundfunktionen von R. Sie werden von den Nutzer_innen erstellt und auf CRAN kostenfrei veröffentlicht.
@@ -109,7 +111,7 @@ Falls Sie noch Fragen haben, nutzen Sie das Forum auf moodle und unterstützen S
 ![moodle_forum](figures/forum_moodle.png)
 ---
 # Objektklassen in R 
-R kann mit einer Vielzahl von verschiedenen Objekttypen arbeiten  
+R kann mit einer Vielzahl von verschiedenen Objektklassen arbeiten  
 * **reele Zahlen (numeric)**
 ```{r object1, echo=TRUE}
 menue_1 <- 5.80
@@ -130,14 +132,14 @@ class(ganze_zahlen)
 ```
 ---
 # Objektklassen in R
-Mit beiden numerischen Objekttypen kann R rechnen 
+Mit beiden numerischen Objektklassen kann R rechnen 
 ```{r object 4, echo=TRUE}
 mean(mensa_preis)
 mean(ganze_zahlen)
 ```
 ---
 # Objektklassen in R
-Aber es gibt nicht nur numerischen Objektklassen
+Aber es gibt nicht nur numerische Objektklassen
 * Variablen können auch Wörter oder **Texte** (character) enthalten
 ```{r object 5, echo=TRUE}
 # Text wird in R mit " " dargestellt
@@ -146,9 +148,9 @@ class(teacher)
 ```
 ---
 # Objektklassen in R
-* R kann aber auch mit den **logischen** Ausdrücken TRUE und FALSE arbeiten
+* R kann aber auch mit den **logischen** Ausdrücken `TRUE` und `FALSE` arbeiten
 ```{r object 6, echo = TRUE}
-# sechs mal gewürfelt mit zwei Würfel
+# sechs mal gewürfelt mit zwei Würfeln
 # hab ich bei dem Wurf einen Pasch gewürfelt?
 pasch <- c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE)
 class(pasch)
@@ -175,24 +177,37 @@ which(pasch == TRUE)
 which(pasch == FALSE)
 ```
 ---
+# Einschub
+In R gibt es eine Reihe von logischen Operatoren wie `==`  
+
+| Operatoren | Beschreibung |
+| ------ | ----|
+| == | gleich |
+| != | ungleich |
+| < | kleiner|
+|>| größer|
+|<=| kleiner gleich|
+|>=| größer gleich |
+Zur Verknüpfung von logischen Tests können Sie `|` für *oder* und `&` für *und* verwenden
+---
 # Objektklassen in R
-Bisher hatten wir nur Vektoren mit einer Sorte von Werten, aber in Vektoren können auch Werte unterschiedlicher Klassen gespeichert werden
+Bisher hatten wir nur Vektoren mit einer Sorte von Werten, aber in Vektoren können auch Werte unterschiedlicher Klassen gespeichert werden.
 ```{r object 9, echo=TRUE}
 # ein Vektor der den Namen des Kurses, die LVA-Nummer
 # und die Anzahl der Studierende enthält
 kurs_fampol <- c("VU Politikfelder – Familienpolitik", 229216, 35)
 class(kurs_fampol)
 ```
-Die Klasse des ganzen Vektors ist "character" also ein Text, obwohl die einzelne Elemente eigentlich "character" oder "numeric" wären
+Die Klasse des ganzen Vektors ist "character" also ein Text, obwohl die einzelne Elemente eigentlich "character" oder "numeric" sind.
 ```{r object 10, echo=TRUE}
 class("VU Politikfelder - Familienpolitik")
 class(c(229216, 35))
 ```
 ---
 # Datentypen in R
-Bisher haben wir mit dem Datentyp "Vektor" mt unterschiedlicher Längern und Werter unterschiedlicher Klassen gearbeitet. R kennt aber mehrere Datentypen. 
+Bisher haben wir mit dem Datentyp "Vektor" mit unterschiedlichen Längen und Werten unterschiedlicher Klassen gearbeitet. 
 
-Folgende Datentypen gibt es in R:
+Es gibt in R aber noch weitere Datentypen:
 * Vektoren
 * Matrizen
 * Arrays
@@ -202,7 +217,7 @@ Folgende Datentypen gibt es in R:
 Wir werden nur mit **Vektoren** und **Dataframes** arbeiten. 
 ---
 # Datentypen in R
-**Vektoren** sind eigentlich eine geordnete Folge von Werten und können entweder aus einer Sorte von Klassen von Werten oder gemischten Klassen von Werten bestehen.
+Ein **Vektor** ist eigentlich eine geordnete Folge von Werten und kann entweder aus einer Sorte von Klassen oder gemischten Klassen von Werten bestehen.
 ```{r typen 1, echo=TRUE}
 # der Preis des menue_1 ist ein numerischer Vektor mit einem Wert
 # also der Länge 1
@@ -214,7 +229,7 @@ str(mensa_preis)
 ---
 # Datentypen in R
 ```{r typen 2, echo=TRUE}
-# meine Aufzeichnung über meine Paschwürfe sind ein Vektor mit
+# meine Aufzeichnung über meine Paschwürfe ist ein Vektor mit
 # logischen Werten und der Länge 6
 str(pasch)
 # da Vektoren geordnet sind, kann ich die Position 
@@ -224,7 +239,172 @@ which(pasch == TRUE)
 Sortenreine Vektoren (atomare Vektoren) sind die Basis der meisten Datentypen in R. 
 ---
 # Datentypen in R
-**Faktoren** sind Vektoren die nur vorab festgelegte Elemente speichern. Für R sind Faktoren reine Vektoren mit ganzen Zahlen und jeder ganzen Zahl ist ein Text zugeordnet. Da ganze Zahlen gereiht werden können, werden für ordinal skalierte Variablen Faktoren verwendet.
+**Faktoren** sind Vektoren die nur vorab festgelegte Elemente speichern. Für R sind Faktoren reine Vektoren mit ganzen Zahlen und jeder ganzen Zahl ist ein Text zugeordnet. Da ganze Zahlen gereiht werden können, werden Faktoren für ordinal skalierte Variablen verwendet.
 ```{r typen 3, echo=TRUE}
-
+# War mein Tee in den letzten 7 Tagen zu heiß, richtig oder zu kalt?
+tea <- factor(c("hot", "hot", "cold", "right", "hot", "right", "hot"),
+              levels = c("hot", "right", "cold"))
+attributes(tea)
 ```
+*Sie können den Inhalt innerhalb der Klammern () einer Funktion auf mehrere Zeilen aufteilen. Vergessen Sie nicht die Klammern zu schließen*
+---
+# Datentypen in R
+Für R ist "tea" ein Vektor mit den gereihten levels "hot", "right" und "cold". Dem level "hot" ist die Zahl 1, dem level "right" die Zahl 2 und dem level "cold" die Zahl 3 zugeordnet.
+```{r typen 4, echo=TRUE}
+attributes(tea)
+```
+Bei der Umwandlung des Faktor-Vektors in einen numerischen Vektor verschwinden die levels und die ganzen Zahlen bleiben übrig.
+```{r typen 5, echo=TRUE}
+as.numeric(tea)
+```
+---
+# Datentypen in R
+Vektoren sind eindimensional, d.h. die Werte eines Vektors sind in Reihe geordnet, wie zB Ländernamen.
+```{r dataframes 1, echo=TRUE}
+country <- c("Frankreich", "Belgien", "Finnland", "Dänemark", "Italien", "Österreich")
+country
+```
+Oder sechs mal hintereinander das gleiche Jahr 2018.
+```{r dataframes 2, echo=TRUE}
+year <- rep(2018, times = 6)
+year
+```
+Um die Jahreszahl 2018 jedem Land zuzuordnen, brauchen wir eine zweite Dimension.
+---
+# Datentypen in R
+**Dataframes** sind vergleichbar mit einer excel-Tabelle bei der jede Spalte eine eigene Variable ist. In R können Vektoren gleicher Länge zu einem Dataframe verbunden werden, zB die Ländernamen mit den Jahreszahlen.
+```{r dataframes 3, echo=TRUE}
+socx <- data.frame(country, year)
+socx
+```
+R verknüpft die Werte der zwei Vektoren basierend auf ihrer Position innerhalb ihres Vektors. 
+---
+# Datentypen in R
+Somit haben wir unsere erste Tabelle in R. Sechs Ländernamen und sechs mal das Jahr 2018. Interessant wird es, wenn wir zu den Ländern die öffentlichen Ausgaben für Sozialpolitik hinzufügen.  
+(Quelle: http://www.oecd.org/social/expenditure.htm)
+```{r dataframes 4, echo=TRUE}
+public_socx <- c(31.2, 28.9, 28.7, 28.0, 27.9, 26.9)
+socx <- data.frame(country, year, public_socx)
+socx
+```
+Wie auch schon vorher ist die Reihenfolge der Werte des "public_socx" Vektors wichtig. Würden die Werte in einer anderen Reihenfolge sein, wird dem Land die falschen Sozialausgaben zugeordnet.
+---
+# Datentypen in R
+Jede Spalte in einem Dataframe ist wie ein eigener Vektor und hat deshalb auch eine eigene Objektklasse.
+```{r dataframes 5, echo=TRUE}
+str(socx)
+```
+---
+# Datentypen in R
+Ein Faktor-Vektor für die Ländernamen? Hier wäre die Objektklasse "character" praktischer, da Ländernamen nicht ordinal skaliert sind. Mit `as.character()`können Vektoren und Spalten eines Dataframes umgewandelt werden.
+```{r dataframes 6, echo=TRUE}
+# Entweder bevor Sie das Dataframe erstellen
+country <- as.character(country)
+socx <- data.frame(country, year, public_socx)
+
+# Oder im schon existierenden Dataframe mit dem $Variablennamen
+socx$country <- as.character(socx$country)
+
+str(socx)
+```
+---
+# Datentypen in R
+Mit `rbind()`können Sie einem Dataframe neue Zeilen hinzufügen. In unserem Fall sind das die Sozialausgaben von Schweden im Jahr 2018 und die Sozialausgaben von Deutschland im Jahr 2018. 
+```{r dataframes 7, echo=TRUE}
+socx <- rbind(socx,
+      c("Schweden", 2018, 26.1),
+      c("Deutschland", 2018, 25.1))
+socx
+```
+---
+# Datentypen in R
+Leider hat R beim Hinzufügen von Schweden und Deutschland die Variablen `year` und `public_socx` zu "character" geändert.
+```{r dataframes 8, echo=TRUE}
+str(socx)
+```
+Das kann mit `as.numeric()` rückgängig gemacht werden.
+```{r dataframe 9, echo=TRUE}
+socx$year <- as.numeric(socx$year)
+socx$public_socx <- as.numeric(socx$public_socx)
+```
+---
+#  Daten indizieren
+Bei der Umwandlung der `country` Variable mussten wir R sagen auf welche Variable im Dataframe `socx` sich die Funktion `as.character()` bezieht und in welcher Variable die Umwandlung gespeichert werden soll.
+
+Das haben wir mit `socx$country` gemacht. Damit haben wir die `country` Variable indiziert. 
+```{r indizieren 1, echo=TRUE}
+socx$country
+# $ können wir auch in Rechnungen verwenden
+# dafür muss die Variable numerisch sein!
+mean(socx$public_socx)
+```
+---
+# Daten indizieren
+Es gibt noch weitere Wege ganze Variablen oder einzelne Werte zu indizieren:
+* Anhand der Position innerhalb eines Vektors mit `[]`
+```{r indizieren 2, echo=TRUE}
+# ich möchte wissen ob am 3. Tag mein 
+# Tee heiß, kalt oder richtig war
+tea
+tea[3]
+```
+---
+# Daten indizieren
+```{r indiziere 3, echo=TRUE}
+# Wie war der Tee am 1. und am 7.Tag?
+tea[c(1,7)]
+# man kann auch alle andere Tage mit - auschließen
+tea[-c(2,3,4,5,6)]
+# eine Reihe von Zahlen kann mit dem Start:Ende verkürzt werden
+tea[-c(2:6)]
+```
+---
+# Daten indizieren
+* Anhand von logischen Bedingungen
+```{r indizieren 4, echo=TRUE}
+# Nur alle Beobachtungen wo mein Tee richtig war
+tea[tea == "right"]
+# das kann ich nutzen, um die Anzahl der Tage 
+# an denen mein Tee richtig war zu zählen
+length(tea[tea == "right"])
+```
+---
+# Daten indizieren
+**Dataframes** sind zweidimensional, deshalb brauch R die Information zur Zeilen- und Spaltenposition
+```{r indizieren 5, echo=TRUE}
+#  um den Wert in der 7. Zeile und 3. Spalte auszuwählen
+socx[7,3]
+# um die Werte in der 7. & 8. Zeile und 3. Spalte auszuwählen
+socx[c(7,8), 3]
+# um die komplette 7. Zeile auszuwählen
+socx[7, ]
+```
+---
+# Daten indizieren
+```{r, indizieren 6, echo=TRUE}
+# um die kompette 3. Spalte auszuwählen
+socx[, 3]
+```
+R gibt uns die Werte der dritten Variable in unserem Dataframe. Richtig übersichtlich ist das nicht.  
+
+Am besten wählen wir die Variable mit ihrem ihrem Namen `public_socx` und `$` aus.
+```{r indizieren 7, echo=TRUE}
+socx$public_socx
+```
+---
+# Übung
+Diese Woche erstellen Sie Ihr erstes Dataframe und berechnen die durchschnittlichen Sozialausgaben von 3 Ländern. 
+* Gehen Sie auf http://www.oecd.org/social/expenditure.htm und wählen Sie 3 Länder aus
+* Erstellen Sie ein R Skript mit Ihrem # Namen und # Übung 3 am Anfang
+* Erstellen Sie einen Vektor der die Namen der 3 Länder ihre Wahl beinhaltet
+* Erstellen Sie einen zweiten Vektor der die Sozialausgaben der drei Länder beinhaltet
+* Erstellen Sie ein Dataframe mit `data.frame()` und den Namen Ihrer zwei Vektoren
+* Berechnen Sie die durschnittlichen Ausgaben mit `mean()` und in den Klammern den Variablennamen der Sozialausgaben  
+
+Laden Sie das Skript bis 25.03. 12:00 auf moodle hoch
+---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das Forum auf moodle und schauen Sie in die Lektüre für diese Woche
+
+
+![moodle_forum](figures/forum_moodle.png)
