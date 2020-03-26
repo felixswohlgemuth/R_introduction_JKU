@@ -198,14 +198,13 @@ Bisher haben wir unsere Datensätze selbst auf Basis der OECD SOCX Daten erstell
 | Comparative Familiy Policy Database | Allowances, Leave Policies | https://www.demogr.mpg.de/cgi-bin/databases/FamPolDB/index.plx |
 | LIS Family Database | ECEC policies, Leave policies, Working time regulations | https://www.lisdatacenter.org/resources/other-databases/ |
 | Multilinks Database | Allowances, ECEC policies, Leave policies | https://www.ggp-i.org/data/multilinks-database/ |
-
+| Eurostat ESSPROS | Spending on ECE and benefits | https://ec.europa.eu/eurostat/en/data/database |
 ---
 | Database | Main topics | Source |
 | -------- | ----------- | ------ |
 | OECD Family Database | ECEC policies, leave policies, Public spending on benefits and ECEC | http://www.oecd.org/social/family/database.htm |
 | SPIN Database | Child benefits, ECEC policies, Leave policies | https://www.sofi.su.se/spin/ |
 | The Work-Family Policy Indicators | ECEC policies, Leave policies, Working time regulations | https://www.lisdatacenter.org/resources/other-databases/?highlight=work%20famil%20policy%20indicators |
-| Eurostat ESSPROS | Spending on ECE and benefits | https://ec.europa.eu/eurostat/en/data/database |
 .footnote[Quelle: Lohmann, Henning, und Hannah Zagel. „Family Policy in Comparative Perspective: The Concepts and Measurement of Familization and Defamilization“. Journal of European Social Policy 26, Nr. 1 (Februar 2016): 48–65.] 
 ---
 # Daten importieren
