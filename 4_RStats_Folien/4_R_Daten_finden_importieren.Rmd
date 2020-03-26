@@ -402,7 +402,7 @@ save(MaternityDB, country, NOR,
 
 * Speichern Sie den Datensatz als .csv Datei.
 
-**Laden Sie ihr R Skript mit den Befehlen bis 02.04. 12:00 auf moodle hoch**
+**Laden Sie ihr R Skript mit den Befehlen bis 01.04. 12:00 auf moodle hoch**
 ---
 class: center, middle
 Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
