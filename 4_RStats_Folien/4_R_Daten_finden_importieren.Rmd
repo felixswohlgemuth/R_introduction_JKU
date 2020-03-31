@@ -197,18 +197,18 @@ Jeden Montag von 15:00 bis 15:30 auf zoom (link finden Sie in moodle).
 # Daten finden
 Bisher haben wir unsere Datensätze selbst auf Basis der OECD SOCX Daten erstellt. Es gibt einige freizugängliche Datensätze zu den unterschiedlichsten Aspekten von Familienpolitik im Ländervergleich.
 
-| Database | Main topics | Source |
-| -------- | ----------- | ------ |
-| Comparative Familiy Policy Database | Allowances, Leave Policies | https://www.demogr.mpg.de/cgi-bin/databases/FamPolDB/index.plx |
-| LIS Family Database | ECEC policies, Leave policies, Working time regulations | https://www.lisdatacenter.org/resources/other-databases/ |
-| Multilinks Database | Allowances, ECEC policies, Leave policies | https://www.ggp-i.org/data/multilinks-database/ |
+| Database                            | Main topics                                             | Source                                                         |
+| :---------------------------------- | :------------------------------------------------------ | :------------------------------------------------------------- |
+| Comparative Familiy Policy Database | Allowances, Leave Policies                              | https://www.demogr.mpg.de/cgi-bin/databases/FamPolDB/index.plx |
+| LIS Family Database                 | ECEC policies, Leave policies, Working time regulations | https://www.lisdatacenter.org/resources/other-databases/       |
+| Multilinks Database                 | Allowances, ECEC policies, Leave policies               | https://www.ggp-i.org/data/multilinks-database/                |
 ---
-| Database | Main topics | Source |
-| -------- | ----------- | ------ |
-| OECD Family Database | ECEC policies, leave policies, Public spending on benefits and ECEC | http://www.oecd.org/social/family/database.htm |
-| SPIN Database | Child benefits, ECEC policies, Leave policies | https://www.sofi.su.se/spin/ |
-| The Work-Family Policy Indicators | ECEC policies, Leave policies, Working time regulations | https://www.lisdatacenter.org/resources/other-databases/?highlight=work%20famil%20policy%20indicators |
-| Eurostat ESSPROS | Spending on ECE and benefits | https://ec.europa.eu/eurostat/en/data/database |
+| Database                          | Main topics                                                         | Source                                                                                                |
+| :-------------------------------- | :------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------- |
+| OECD Family Database              | ECEC policies, leave policies, Public spending on benefits and ECEC | http://www.oecd.org/social/family/database.htm                                                        |
+| SPIN Database                     | Child benefits, ECEC policies, Leave policies                       | https://www.sofi.su.se/spin/                                                                          |
+| The Work-Family Policy Indicators | ECEC policies, Leave policies, Working time regulations             | https://www.lisdatacenter.org/resources/other-databases/?highlight=work%20famil%20policy%20indicators |
+| Eurostat ESSPROS                  | Spending on ECE and benefits                                        | https://ec.europa.eu/eurostat/en/data/database                                                        |
 ---
 # Daten finden 
 
