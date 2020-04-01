@@ -1,6 +1,6 @@
 ---
 title: "Datenanalyse mit R"
-subtitle: "#5 Daten aufbereiten"
+subtitle: "#6 Daten aufbereiten"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "02.04.2020"
@@ -17,10 +17,16 @@ output:
 ---
 class: inverse, middle 
 ### Datenanalyse mit R
-# # 5 Daten aufbereiten
+# # 6 Daten aufbereiten
 ### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
 ### 02.04.2020
 ![logo](figures/gespol_logo.png)
+---
+class:inverse, middle 
+# 6 ist das neue 5
+## Die 5.Sitzung wäre das Mittwochskolloquium mit Julian Garritzmann gewesen. Um die Struktur des Syllabus einzuhalten, überspringen wir die 5.Sitzung. Inhaltlich knüpfen wir direkt an die letzte Woche an.  
+
+Julian Garritzmann arbeitet auch mit R. Er veröffentlicht seine Daten als .rds und seine R Skripte. Sie können seine lezte Publikation einfach nachbauen: https://ejpr.onlinelibrary.wiley.com/doi/full/10.1111/1475-6765.12371 (Supporting Information am Ende der Seite)
 ---
 # Übung 4
 Danke für Ihre Skripts und auch Danke, dass Sie sich an der Forumsdiskussion beteiligt haben! Ich hoffe Sie konnten alle eine Lösung für ihr Problem finden.  
@@ -168,7 +174,7 @@ save(MaternityDB, country, NOR, file = "data/Maternity_session2603.rdata")
 ```
 ---
 class: inverse, middle 
-# # 5 Daten aufbereiten
+# # 6 Daten aufbereiten
 ---
 # Daten aufbereiten mit dplyr 
 * `dplyr` ist Teil des `tidyverse`.
@@ -182,16 +188,16 @@ knitr::include_graphics("figures/tidyverse.jpg")
 # Daten aufbereiten mit dplyr 
 * `dplyr` ist Teil des `tidyverse`.
 
-* Basiert auf den Grunprinzipien: 
+* Basiert auf den Grundprinzipien: 
   * Komplexe Datenaufbereitung kann in wenige **Grundbausteine** zerteilt werden.
-  * **pipes `%>%`** funktionieren als Verknüpfung der Grundbausteine und können übersetzt werden mit "UND DANN" oder "Nehme das resultierende Dataframe aus der vorheringen Funktion und wende das Folgende darauf an".
+  * **pipes `%>%`** funktionieren als Verknüpfung der Grundbausteine und können übersetzt werden mit "UND DANN" oder "Nehme das resultierende Dataframe aus der vorherigen Funktion und wende das Folgende darauf an".
   
 * Befehle aus `dyplr` sind für die Arbeit mit Dataframes entwickelt: 
   * Sie erwarten Dataframes und geben Dataframes aus.
   * *Eigentlich sind es es tibbles, eine Art von Dataframe (Mehr Infos: https://r4ds.had.co.nz/tibbles.html)*.
 ---
 # Daten aufbereiten mit dplyr
-* Um mehrere Funktionen ohne Zwischenergebnisse in R durchzuführen, müssen Funktionen in (Funtkionen) geschrieben werden.
+* Um mehrere Funktionen ohne Zwischenergebnisse in R durchzuführen, müssen Funktionen in (Funktionen) geschrieben werden.
 * Mit `%>%` können Befehle hintereinander gereiht werden.
 
 * Vor der ersten `%>%` muss spezifiziert werden auf welchen Dataframe sich die nachfolgende Funktionen beziehen (hier: me).
@@ -282,7 +288,7 @@ Zur Erinnerung:
 * `!=` heißt in R ungleich, also nimmt `filter()` alle Zeilen außer die Zeilen, welche die zwei EU-Bezeichnungen beinhalten.
 * `&` ist *und*  `|` ist *oder* 
 * Mit `!` (gesprochen NOT) kann eine logischen Aussage "umgedreht" werden.
-* `%in%`  filtert mit Elemten aus einer Menge `c()`.
+* `%in%`  filtert mit Elementen aus einer Menge `c()`.
 ---
 # Daten aufbereiten: Variablen manipulieren
 
@@ -290,8 +296,8 @@ Der große Vorteil von `%>%` ist, dass man mehrere Funktionen hintereinander set
 * Mit `rename()` benennen wir unsere Hauptvariable um.
 * Mit `mutate()` erstellen wir eine neue Variable, da die aber so heißt wie unsere Hauptvariable wird diese überschrieben.
 * Mit `as.numeric()` überschreiben `ece_o4y` mit einer numerischen Version derselben Variable.
-* Bei der Änderung zu einer numerischen Variable werden alle Werte die keine Zahl sind als `NA` gesetzt (im Orginal waren fehlende Werte mit `:` definiert).
-* Mit `drop_na()` löschen wir alle Zeilen, also Länder-Jahre, die keinen Wert für die Betreungsquote haben.
+* Bei der Änderung zu einer numerischen Variable werden alle Werte die keine Zahl sind als `NA` gesetzt (im Original waren fehlende Werte mit `:` definiert).
+* Mit `drop_na()` löschen wir alle Zeilen, also Länder-Jahre, die keinen Wert für die Betreuungsquote haben.
 * Als wir mit `unique()` die Ländernamen angeschaut haben, haben wir gesehen, dass es einen Ländernamen mit Leerzeichen gibt. R arbeitet am besten wenn character-Werte und Objektnamen nur aus Buchstaben, `_` und Zahlen (nicht als erstes Zeichen) bestehen. 
   
 
@@ -356,7 +362,7 @@ ece <- ece %>%
 # tidy Data
 Für Datenanalyse benötigt es tidy data (= aufgeräumte Datensätze): 
 * Jede Spalte hat einem Variablennamen und alle Spalten haben die gleiche Länge (rechteckiges Dataframe).
-* Jede Zeileist eine eine Beobachtung (zB Länder-Jahr) und jede jede Spalte eine Variable.
+* Jede Zeile ist eine eine Beobachtung (zB Länder-Jahr) und jede jede Spalte eine Variable.
 * Fehlende Werte sind als missing definiert (NA).
 * Daten sind nicht von Hand kodieren, sondern nachvollziehbar mit R Skripten.
 * Variablennamen sind ohne Sonderzeichen und Leerzeichen  
@@ -413,13 +419,12 @@ class: centre, middle
 knitr::include_graphics("output/plot2.png ")
 ```
 ---
-# Übung
-* Laden Sie von moodle den OECD Datensatz "SOCX_AGG_31032020142101957.csv" herunter.
-* So sehen die OECD Daten für Sozialausgaben für Familienpolitik in % des BIPs aus.
+# Übung 6 (6 ist das neue 5)
+* Laden Sie von moodle den OECD Datensatz "SOCX_AGG_31032020142101957.csv" herunter.  
 * Bearbeiten Sie den Datensatz, so dass Sie ein tidy dataset bekommen.
 * Berechnen Sie die durchschnittlichen Ausgaben für Familienpolitik in Österreich im Zeitraum 2000 - 2015.
 * Welche fünf Länder haben im Jahr 2010 am meisten für Familienpolitik ausgegeben (in % des BIPs)?
-* Speichern Sie die Erbenisse als # Kommentar im Skript.
+* Speichern Sie die Ergebnisse als # Kommentar im Skript.
 * Ihr R Skript sollte alle verwendeten Funktionen beinhalten (lassen Sie ihr fertiges R Skript am Ende nochmal komplett durchlaufen. Falls Sie einen Fehler erhalten, beheben Sie diesen).
 
 **Laden Sie Ihr R Skript bis spätestens 22.04. 12:00 auf moodle hoch** 
