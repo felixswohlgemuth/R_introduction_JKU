@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Datenanalyse mit R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Tobias Wiß, Carmen Walenta   und Felix Wohlgemuth" />
+    <script src="libs/header-attrs-2.1/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: inverse, middle 
+### Datenanalyse mit R
+# # 6 Beschreibende Statistik: Einzelvariablen
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 23.04.2020
+![logo](figures/gespol_logo.png)
+---
+class: inverse, middle
+# Vielen Dank für Ihre rege Beteiligung am R-Teil des Kurses !!
+
+Ihre Skripte sind sehr gut und ich bin beigeistert, dass Sie nach kurzer Zeit so gut mit R umgehen können.
+
+All das was Sie in den Übungen geschrieben haben, können Sie direkt für die Übungsaufgabe 4 verwenden. Passen Sie einfach die Skripte an Ihre Fragestellung an und dann haben Sie schon den R-Teil für die Übungsaufgabe 4.
+
+In den letzten Einheiten haben Sie die grundlegenden Funktionen, um zu einem tidy dataset zu kommen, kennen gelernt. In den nächste Einheiten werden wir lernen, wie man die interessanten Informationen aus den Daten bekommt und wie man diese visualisiert.
+---
+class: inverse, middle
+# Neuer Ablauf des R-Teils
+Falls Sie Probleme bei den Übungen haben oder Fragen zu den Folien, dann nutzen Sie bitte die Sprechstunde und das R Forum auf moodle.
+
+Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf des R-Teils:
+* Die Folien und die Übungsaufgabe der Woche werden am Dienstag Nachmittag auf moodle hochgeladen. 
+
+* Bitte schauen Sie sich die Folien an und notieren Sie sich alle Unklarheiten und welche Themen genauer erläutert werden sollen. 
+
+* Das Lösungsskript für die Übungsaufgabe wird am Mittwoch um 13:00 auf moodle hochgeladen.  
+
+* Am **Donnerstag von 11:00 bis 11:45** gibt es dann eine R Sprechstunde auf zoom (Link und Passwort auf moodle). Hier besprechen wir dann alle Themen und Fragen. Sie können natürlich auch ohne Frage an der Sprechstunde teilnehmen. 
+
+---
+class:inverse, centre, middle 
+&lt;img src="figures/nykd2uzwy74z.jpg" width="110%" /&gt;
+.footnote[Source: R Memes for Statistical Fiends https://www.reddit.com/r/rstatsmemes/]
+---
+class: inverse
+# Übung 6
+
+Die Lösungsskript für die Übung 6 finden Sie ab Mittwoch 13:00 auf moodle. 
+
+Das Lösungsskript ist als html-Report abgespeichert. Es beinhaltet alle Befehle / Funktionen und den Output in einem Dokument.
+
+*Falls Sie selbst ein R-Skript als Report speichern wollen, dann nutzen Sie das "compile-report" addin von RStudio (https://rmarkdown.rstudio.com/articles_report_from_r_script.html). Anstelle des Befehls können Sie auch den Button am oberen Rand des Skript-Fensters verwenden (sieht wie ein kleines Notizbuch aus).* 
+---
+class: inverse, middle, centre
+# Was haben wir letzte Woche gelernt?
+---
+# dplyr = Tools für Datenaufbereitung
+&lt;img src="figures/dplyr.jpeg" width="100%" /&gt;
+.footnote[Source: Chris Vaccaro https://medium.com/@chrisvaccaro_78233/the-absolute-fastest-way-to-learn-r-for-data-science-606ab2b28b7e/]
+---
+# dplyr - Datenaufbereitung
+* Mit `%&gt;%` können Befehle hintereinander gereiht werden. Vor der ersten `%&gt;%` muss spezifiziert werden auf welchen Dataframe sich die nachfolgende Funktionen beziehen (Im Beispiel: `socx_data`).
+* Mit `select()` werden Variablen (Spalten) ausgewählt. Der Vorteil von `select()` aus dplyr ist, dass die Auswahl per Variablennamen und nicht per Position funktioniert.
+* Mit `filter()`werden Beobachtungen (Zeilen) ausgewählt. Die nachfolgende Behfehl beziehen sich auf die ausgewählten Zeilen.
+* Mit `rename()` können Variablen umbenannt werden.
+* Mit `mutate()` werden neue Variable erstellt oder existierende bearbeitet und überschrieben.
+* Mit `drop_na()` werden alle Zeilen ohne Wert gelöscht.
+* `arrange()` ordnet den Datensatz basierend auf einer oder mehreren Variablen. In der Grundeinstellung wird der Datensatz aufsteigend angeordnet mit `-` vor dem Variablennamen wird der Datensatz absteigend angeordnet.
+---
+# logische Operatoren in R
+
+| Operatoren | Beschreibung                                                |
+| :--------- | :---------------------------------------------------------- |
+| !          | NOT (Gegenteil einer logischen Aussage)                     |
+| ==         | gleich                                                      |
+| !=         | ungleich                                                    |
+| &lt;          | kleiner                                                     |
+| &gt;          | größer                                                      |
+| &lt;=         | kleiner gleich                                              |
+| &gt;=         | größer gleich                                               |
+| `%in%`     | wält Elementen aus einer Menge `c()` aus, zB für `filter()` |
+
+Zur Verknüpfung von logischen Tests können Sie `|` für *oder* und `&amp;` für *und* verwenden
+---
+# dplyr - Gruppieren &amp; Zusammenfassen
+* Mit `group_by()` wird der Datensatz nach den Werten der ausgewählten Variable gruppiert. Alle folgende Berechnungen werden für jede Gruppen separat gemacht.
+* Mit `summarise()` können unterschiedliche Kennzahlen wie `mean()` oder `min()` und `max()` berechnet werden. **Das behandeln wir heute tiefer.**
+---
+# dplyr - Beispiel
+
+```r
+# clean data
+socx_data &lt;- socx_data %&gt;%            # select dataframe and replace dataframe
+  select(COUNTRY, YEAR, Value) %&gt;%    # select essential variables
+  rename(fampol_exp_pct = Value) %&gt;%  # rename Value Variable
+  mutate(fampol_exp_pct = fampol_exp_pct / 100) # recode expenditure variable: 0-1 instead of 0-100
+
+# average public expenditure on family policy for Austria (2000 - 2015)
+socx_data %&gt;%                     # select dataframe
+  filter(COUNTRY == "AUS") %&gt;%    # select only Austrian data
+  summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) # specify mean()
+
+# average public expenditure on family policy for all countries in sample (2000 - 2015)
+mean_fampol_exp_by_country &lt;-  socx_data %&gt;%    # select dataframe and save results in "mean_fampol_exp_by_country"
+  group_by(COUNTRY) %&gt;%                         # group by countries
+  summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) %&gt;% # specify mean(), applied to each country
+  print()                                       # print results first 10 values
+
+# top 5 countries with most family policy expenditure in 2010
+socx_data %&gt;%                   # select dataframe
+  filter(YEAR == 2010) %&gt;%      # select onle 2010 values
+  arrange(-fampol_exp_pct) %&gt;%  # arrange data ascending by family policy expenditure in 2010
+  head( n = 5)                  # print first 5 values
+```
+---
+# tidy Data
+**Jede Zeile eine Beobachtung, jede Spalte eine Variable, jede Zelle ein Wert**.
+
+
+&lt;img src="figures/tidy-1.png " width="90%" /&gt;
+
+.footnote[Source: https://r4ds.had.co.nz/tidy-data.html]
+---
+class: inverse, middle, centre
+# Deskriptive Statistik: Einzelvariablen
+---
+# Datensatz für die heutige Sitzung
+* Die folgende Beispiele basieren wieder auf dem OECD SOCX Datensatz der letzten Woche.
+* Zusätzlich zu den insgesamten öffentlichen Ausgaben für Familienpolitik, beinhaltet der Datensatz jetzt auch Informationen zu den öffentlichen Ausgaben für die einzelnen familienpolitischen Instrumenten (alle Variablen sind in % BIP).  
+
+
+```r
+variable.names(socx_data)
+```
+
+```
+##  [1] "COUNTRY"                              
+##  [2] "YEAR"                                 
+##  [3] "family_cash_allowances_pct_gdp"       
+##  [4] "family_cash_leave_pct_gdp"            
+##  [5] "family_cash_other_cash_pct_gdp"       
+##  [6] "family_cash_total_pct_gdp"            
+##  [7] "family_service_accomodation_pct_gdp"  
+##  [8] "family_service_childcare_pct_gdp"     
+##  [9] "family_service_other_services_pct_gdp"
+## [10] "family_service_total_pct_gdp"         
+## [11] "family_total_total_pct_gdp"
+```
+---
+# Deskriptive Statistik mit dplyr
+* `summarise()` fasst einen Vektor oder eine Variable im Dataframe zu einer oder mehreren Werten zusammen.
+* `summarise()` berechnet Lagemaße und auch Streuungsmaße, wie zB:
+  * Center: mean(), median()
+  * Spread: sd(), IQR(), mad()
+  * Range: min(), max(), quantile()
+  * Position: first(), last(), nth(),
+  * Count: n(), n_distinct()
+  * Logical: any(), all()
+* In `summarise` können Sie auch eigene Maße berechnen, die auf den Funktionen basieren.
+* `summarise()` ist Teil von dplyr, d.h. es ist kompatibel mit `%&gt;%`, berücksichtigt `group_by` und gibt ein Dataframe aus.
+---
+# Deskriptive Statistik mit dplyr
+
+```r
+# Der niedrigsten und höchsten Ausgaben im Jahr 2015 für formale Kinderbetreuung
+socx_data %&gt;%
+  filter(YEAR == 2010) %&gt;%
+  summarise(niedrigste = min(family_service_childcare_pct_gdp), 
+            hoechste = max(family_service_childcare_pct_gdp))
+```
+
+```
+## # A tibble: 1 x 2
+##   niedrigste hoechste
+##        &lt;dbl&gt;    &lt;dbl&gt;
+## 1      0.034     1.58
+```
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

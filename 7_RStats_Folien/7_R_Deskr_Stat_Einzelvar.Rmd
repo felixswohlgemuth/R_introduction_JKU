@@ -1,0 +1,193 @@
+---
+title: "Datenanalyse mit R"
+subtitle: "#7 Daten aufbereiten"
+author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
+institute: "gespol, JKU"
+date: "02.04.2020"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      
+---
+class: inverse, middle 
+### Datenanalyse mit R
+# # 6 Beschreibende Statistik: Einzelvariablen
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 23.04.2020
+![logo](figures/gespol_logo.png)
+---
+class: inverse, middle
+# Vielen Dank für Ihre rege Beteiligung am R-Teil des Kurses !!
+
+Ihre Skripte sind sehr gut und ich bin beigeistert, dass Sie nach kurzer Zeit so gut mit R umgehen können.
+
+All das was Sie in den Übungen geschrieben haben, können Sie direkt für die Übungsaufgabe 4 verwenden. Passen Sie einfach die Skripte an Ihre Fragestellung an und dann haben Sie schon den R-Teil für die Übungsaufgabe 4.
+
+In den letzten Einheiten haben Sie die grundlegenden Funktionen, um zu einem tidy dataset zu kommen, kennen gelernt. In den nächste Einheiten werden wir lernen, wie man die interessanten Informationen aus den Daten bekommt und wie man diese visualisiert.
+---
+class: inverse, middle
+# Neuer Ablauf des R-Teils
+Falls Sie Probleme bei den Übungen haben oder Fragen zu den Folien, dann nutzen Sie bitte die Sprechstunde und das R Forum auf moodle.
+
+Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf des R-Teils:
+* Die Folien und die Übungsaufgabe der Woche werden am Dienstag Nachmittag auf moodle hochgeladen. 
+
+* Bitte schauen Sie sich die Folien an und notieren Sie sich alle Unklarheiten und welche Themen genauer erläutert werden sollen. 
+
+* Das Lösungsskript für die Übungsaufgabe wird am Mittwoch um 13:00 auf moodle hochgeladen.  
+
+* Am **Donnerstag von 11:00 bis 11:45** gibt es dann eine R Sprechstunde auf zoom (Link und Passwort auf moodle). Hier besprechen wir dann alle Themen und Fragen. Sie können natürlich auch ohne Frage an der Sprechstunde teilnehmen. 
+
+---
+class:inverse, centre, middle 
+```{r sprechstunde, echo=FALSE, out.width = "110%", fig.pos= 'h'}
+knitr::include_graphics("figures/nykd2uzwy74z.jpg")
+```
+.footnote[Source: R Memes for Statistical Fiends https://www.reddit.com/r/rstatsmemes/]
+---
+class: inverse
+# Übung 6
+
+Die Lösungsskript für die Übung 6 finden Sie ab Mittwoch 13:00 auf moodle. 
+
+Das Lösungsskript ist als html-Report abgespeichert. Es beinhaltet alle Befehle / Funktionen und den Output in einem Dokument.
+
+*Falls Sie selbst ein R-Skript als Report speichern wollen, dann nutzen Sie das "compile-report" addin von RStudio (https://rmarkdown.rstudio.com/articles_report_from_r_script.html). Anstelle des Befehls können Sie auch den Button am oberen Rand des Skript-Fensters verwenden (sieht wie ein kleines Notizbuch aus).* 
+---
+class: inverse, middle, centre
+# Was haben wir letzte Woche gelernt?
+---
+# dplyr = Tools für Datenaufbereitung
+```{r dplyr, echo=FALSE, out.width = "100%", fig.pos= 'h'}
+knitr::include_graphics("figures/dplyr.jpeg")
+```  
+.footnote[Source: Chris Vaccaro https://medium.com/@chrisvaccaro_78233/the-absolute-fastest-way-to-learn-r-for-data-science-606ab2b28b7e/]
+---
+# dplyr - Datenaufbereitung
+* Mit `%>%` können Befehle hintereinander gereiht werden. Vor der ersten `%>%` muss spezifiziert werden auf welchen Dataframe sich die nachfolgende Funktionen beziehen (Im Beispiel: `socx_data`).
+* Mit `select()` werden Variablen (Spalten) ausgewählt. Der Vorteil von `select()` aus dplyr ist, dass die Auswahl per Variablennamen und nicht per Position funktioniert.
+* Mit `filter()`werden Beobachtungen (Zeilen) ausgewählt. Die nachfolgende Behfehl beziehen sich auf die ausgewählten Zeilen.
+* Mit `rename()` können Variablen umbenannt werden.
+* Mit `mutate()` werden neue Variable erstellt oder existierende bearbeitet und überschrieben.
+* Mit `drop_na()` werden alle Zeilen ohne Wert gelöscht.
+* `arrange()` ordnet den Datensatz basierend auf einer oder mehreren Variablen. In der Grundeinstellung wird der Datensatz aufsteigend angeordnet mit `-` vor dem Variablennamen wird der Datensatz absteigend angeordnet.
+---
+# logische Operatoren in R
+
+| Operatoren | Beschreibung                                                |
+| :--------- | :---------------------------------------------------------- |
+| !          | NOT (Gegenteil einer logischen Aussage)                     |
+| ==         | gleich                                                      |
+| !=         | ungleich                                                    |
+| <          | kleiner                                                     |
+| >          | größer                                                      |
+| <=         | kleiner gleich                                              |
+| >=         | größer gleich                                               |
+| `%in%`     | wält Elementen aus einer Menge `c()` aus, zB für `filter()` |
+
+Zur Verknüpfung von logischen Tests können Sie `|` für *oder* und `&` für *und* verwenden
+---
+# dplyr - Gruppieren & Zusammenfassen
+* Mit `group_by()` wird der Datensatz nach den Werten der ausgewählten Variable gruppiert. Alle folgende Berechnungen werden für jede Gruppen separat gemacht.
+* Mit `summarise()` können unterschiedliche Kennzahlen wie `mean()` oder `min()` und `max()` berechnet werden. **Das behandeln wir heute tiefer.**
+---
+# dplyr - Beispiel
+```{r, eval=FALSE}
+# clean data
+socx_data <- socx_data %>%            # select dataframe and replace dataframe
+  select(COUNTRY, YEAR, Value) %>%    # select essential variables
+  rename(fampol_exp_pct = Value) %>%  # rename Value Variable
+  mutate(fampol_exp_pct = fampol_exp_pct / 100) # recode expenditure variable: 0-1 instead of 0-100
+
+# average public expenditure on family policy for Austria (2000 - 2015)
+socx_data %>%                     # select dataframe
+  filter(COUNTRY == "AUS") %>%    # select only Austrian data
+  summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) # specify mean()
+
+# average public expenditure on family policy for all countries in sample (2000 - 2015)
+mean_fampol_exp_by_country <-  socx_data %>%    # select dataframe and save results in "mean_fampol_exp_by_country"
+  group_by(COUNTRY) %>%                         # group by countries
+  summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) %>% # specify mean(), applied to each country
+  print()                                       # print results first 10 values
+
+# top 5 countries with most family policy expenditure in 2010
+socx_data %>%                   # select dataframe
+  filter(YEAR == 2010) %>%      # select onle 2010 values
+  arrange(-fampol_exp_pct) %>%  # arrange data ascending by family policy expenditure in 2010
+  head( n = 5)                  # print first 5 values
+```
+---
+# tidy Data
+**Jede Zeile eine Beobachtung, jede Spalte eine Variable, jede Zelle ein Wert**.
+
+
+```{r tidy, echo = FALSE, out.width = "90%", fig.pos= 'h'}
+knitr::include_graphics("figures/tidy-1.png ")
+```
+
+.footnote[Source: https://r4ds.had.co.nz/tidy-data.html]
+---
+class: inverse, middle, centre
+# Deskriptive Statistik: Einzelvariablen
+---
+# Datensatz für die heutige Sitzung
+* Die folgende Beispiele basieren wieder auf dem OECD SOCX Datensatz der letzten Woche.
+* Zusätzlich zu den insgesamten öffentlichen Ausgaben für Familienpolitik, beinhaltet der Datensatz jetzt auch Informationen zu den öffentlichen Ausgaben für die einzelnen familienpolitischen Instrumenten (alle Variablen sind in % BIP).  
+```{r import, include = FALSE}
+library(tidyverse)
+socx_data <- read_csv("_raw/SOCX_AGG_20042020191205895.csv")
+
+socx_data <- socx_data %>% 
+  mutate(`Type of Expenditure` = recode(`Type of Expenditure`, "Total" = "total", "Cash benefits" = "cash", "Benefits in kind" = "service")) %>%
+  mutate(Branch = recode(Branch, "Old age" = "age", "Family" = "family")) %>%
+  mutate(`Type of Programme` = recode(`Type of Programme`, "Total" = "total",
+                              "Old age - Early retirement pension" = "early_retirement",
+                              "Old age - Residential care / Home-help services" = "care",
+                              "Old age - Pension" = "pension",
+                              "Old age - Other cash benefits" = "other_cash",
+                              "Old age - Other benefits in kind" = "other_services",
+                               "Family - Family allowances" = "allowances",
+                               "Family - Maternity and parental leave" = "leave",
+                               "Family - Other cash benefits" = "other_cash", 
+                               "Family - Early childhood education and care (ECEC)" = "childcare",
+                               "Family - Home help / Accomodation" = "accomodation", 
+                               "Family - Other benefits in kind" = "other_services")) %>%
+  mutate(UNIT = recode(UNIT, "PCT_GDP" = "pct_gdp")) %>%
+  filter(Branch == "family") %>%
+  mutate(varnames = paste(Branch, `Type of Expenditure`, `Type of Programme`, UNIT, sep = "_")) %>%
+  select(COUNTRY, YEAR, varnames, Value) %>%
+  spread(varnames, Value)
+```
+```{r var names,}
+variable.names(socx_data)
+```
+---
+# Deskriptive Statistik mit dplyr
+* `summarise()` fasst einen Vektor oder eine Variable im Dataframe zu einer oder mehreren Werten zusammen.
+* `summarise()` berechnet Lagemaße und auch Streuungsmaße, wie zB:
+  * Center: mean(), median()
+  * Spread: sd(), IQR(), mad()
+  * Range: min(), max(), quantile()
+  * Position: first(), last(), nth(),
+  * Count: n(), n_distinct()
+  * Logical: any(), all()
+* In `summarise` können Sie auch eigene Maße berechnen, die auf den Funktionen basieren.
+* `summarise()` ist Teil von dplyr, d.h. es ist kompatibel mit `%>%`, berücksichtigt `group_by` und gibt ein Dataframe aus.
+---
+# Deskriptive Statistik mit dplyr
+```{r summarise 1,}
+# Der niedrigsten und höchsten Ausgaben im Jahr 2015 für formale Kinderbetreuung
+socx_data %>%
+  filter(YEAR == 2010) %>%
+  summarise(niedrigste = min(family_service_childcare_pct_gdp), 
+            hoechste = max(family_service_childcare_pct_gdp))
+```
+
+
+
