@@ -31,7 +31,7 @@ All das was Sie in den Übungen geschrieben haben, können Sie direkt für die S
 
 In den letzten Einheiten haben Sie die grundlegenden Funktionen für ein tidy dataset kennen gelernt. In den nächste Einheiten werden wir lernen, wie man die interessanten Informationen aus den Daten bekommt und wie man diese visualisiert.
 ---
-# Neuer Ablauf des R-Teils
+# Neuer Ablauf des R-Teils ab 24.04.
 Falls Sie Probleme bei den Übungen haben oder Fragen zu den Folien, dann nutzen Sie bitte die Sprechstunde und das R Forum auf moodle.
 
 Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf des R-Teils:
@@ -42,7 +42,7 @@ Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf de
 * Ihr R-Skript für die Übungsaufgabe können Sie bis Freitag 12:00 auf moodle hochladen.
 * Das Lösungsskript wird am Freitag um 13:00 auf moodle veröffentlicht.
 ---
-# Neuer Ablauf des R-Teils
+# Neuer Ablauf des R-Teils ab 24.04.
 | Wann? | Was passiert? |
 |-------- | ------- |
 | Freitag Abend (Woche vor der Sprechstunde) | neue Folien und Übungsaufgabe auf moodle |
@@ -51,7 +51,7 @@ Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf de
 | Freitag 13:00 | Lösungsskript wird veröffentlicht |
 ---
 # Neuer Ablauf - Ausnahme diese Woche!
-Diese Woche läuft wegen der Umstellung nach einer eigenen Logik ab:
+Diese Woche (bis 23.04.) läuft wegen der Umstellung nach einer eigenen Logik ab:
 * Dienstag Abend Folien auf moodle.
 * Mittwoch 12:00 Abgabe Übungsaufgabe 6.
 * Mittwoch 13:00 Lösungsskript für Übungsaufgabe 6.
