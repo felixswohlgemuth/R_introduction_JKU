@@ -21,4 +21,5 @@ socx_data <- socx_data %>%
   mutate(varnames = paste(Branch, `Type of Expenditure`, `Type of Programme`, UNIT, sep = "_")) %>%
   select(COUNTRY, YEAR, varnames, Value) %>%
   spread(varnames, Value)
-  
+write_csv(socx_data, "data/SOCX_AGG_20042020191205895.csv")
+

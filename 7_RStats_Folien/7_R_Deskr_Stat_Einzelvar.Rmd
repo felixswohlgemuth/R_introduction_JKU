@@ -27,29 +27,52 @@ class: inverse, middle
 
 Ihre Skripte sind sehr gut und ich bin beigeistert, dass Sie nach kurzer Zeit so gut mit R umgehen können.
 
-All das was Sie in den Übungen geschrieben haben, können Sie direkt für die Übungsaufgabe 4 verwenden. Passen Sie einfach die Skripte an Ihre Fragestellung an und dann haben Sie schon den R-Teil für die Übungsaufgabe 4.
+All das was Sie in den Übungen geschrieben haben, können Sie direkt für die Seminararbeit verwenden. Passen Sie einfach die Skripte an Ihre Fragestellung an und dann haben Sie schon den R-Teil für die Seminararbeit.
 
-In den letzten Einheiten haben Sie die grundlegenden Funktionen, um zu einem tidy dataset zu kommen, kennen gelernt. In den nächste Einheiten werden wir lernen, wie man die interessanten Informationen aus den Daten bekommt und wie man diese visualisiert.
+In den letzten Einheiten haben Sie die grundlegenden Funktionen für ein tidy dataset kennen gelernt. In den nächste Einheiten werden wir lernen, wie man die interessanten Informationen aus den Daten bekommt und wie man diese visualisiert.
 ---
-class: inverse, middle
 # Neuer Ablauf des R-Teils
 Falls Sie Probleme bei den Übungen haben oder Fragen zu den Folien, dann nutzen Sie bitte die Sprechstunde und das R Forum auf moodle.
 
 Um einen besseren Austausch zu ermöglichen, gibt es jetzt einen neuen Ablauf des R-Teils:
-* Die Folien und die Übungsaufgabe der Woche werden am Dienstag Nachmittag auf moodle hochgeladen. 
-
-* Bitte schauen Sie sich die Folien an und notieren Sie sich alle Unklarheiten und welche Themen genauer erläutert werden sollen. 
-
-* Das Lösungsskript für die Übungsaufgabe wird am Mittwoch um 13:00 auf moodle hochgeladen.  
-
-* Am **Donnerstag von 11:00 bis 11:45** gibt es dann eine R Sprechstunde auf zoom (Link und Passwort auf moodle). Hier besprechen wir dann alle Themen und Fragen. Sie können natürlich auch ohne Frage an der Sprechstunde teilnehmen. 
-
+* Die Folien und die Übungsaufgabe der Woche werden am Freitag Abend auf moodle hochgeladen. 
+* Bitte schauen Sie sich die Folien an und notieren Sie sich alle Unklarheiten und welche Themen genauer erläutert werden sollen.
+* Bitte versuchen Sie die Übung zu lösen und notieren Sie sich alle Probleme (Sie können jederzeit Ihre Frage im R Forum stellen und auch Ihre Kolleg*innen mit Ihrem Wissen unterstützen).
+* Am **Anschluss der inhatlichen Live-Sitzung zu Familienpolitik am Donnerstag** oder alternativ am **Donnerstag von 11:00 bis 11:45** gibt es dann eine R Sprechstunde über zoom (Link und Passwort auf moodle). Hier besprechen wir dann alle Themen und Fragen. Sie können natürlich auch ohne Fragen an der Sprechstunde teilnehmen.
+* Ihr R-Skript für die Übungsaufgabe können Sie bis Freitag 12:00 auf moodle hochladen.
+* Das Lösungsskript wird am Freitag um 13:00 auf moodle veröffentlicht.
 ---
-class:inverse, centre, middle 
+# Neuer Ablauf des R-Teils
+| Wann? | Was passiert? |
+|-------- | ------- |
+| Freitag Abend (Woche vor der Sprechstunde) | neue Folien und Übungsaufgabe auf moodle |
+| Donnerstag 11:00 oder nach der Live-Familienpolitik Sitzung | R-Sprechstunde |
+| Freitag 12:00 | Abgabe Übungsaufgabe auf moodle |
+| Freitag 13:00 | Lösungsskript wird veröffentlicht |
+---
+# Neuer Ablauf - Ausnahme diese Woche!
+Diese Woche läuft wegen der Umstellung nach einer eigenen Logik ab:
+* Dienstag Abend Folien auf moodle.
+* Mittwoch 12:00 Abgabe Übungsaufgabe 6.
+* Mittwoch 13:00 Lösungsskript für Übungsaufgabe 6.
+* Donnerstag nach Familienpolitik-Live-Sitzung R-Sprechstunde zu Folien 7 und allen Themen, die Sie besprechen wollen.
+* Die heutige Übung 7 ist optional. Sie können Sie jederzeit bis Mittwoch nächste Woche hochladen. Falls Sie keine Übung abgeben, dann zählt das nicht zu Ihren 4 freien Nicht-Agaben. Ich gebe Ihnen gerne Feedback zu Ihrer Abgabe!
+---
+# R ist sehr empfindlich bei Eingabefehler!
 ```{r sprechstunde, echo=FALSE, out.width = "110%", fig.pos= 'h'}
 knitr::include_graphics("figures/nykd2uzwy74z.jpg")
 ```
 .footnote[Source: R Memes for Statistical Fiends https://www.reddit.com/r/rstatsmemes/]
+---
+# R ist sehr empfindlich bei Eingabefehler!
+* Fall Sie eine Fehlermeldung bekommen und R die Ausführung des Skriptes stoppt, dann fehlt sehr oft eine nicht geschlossene Klammer oder ein Variablennamen oder Funktionsnamen ist falsch geschrieben.
+
+* Die Fehlermeldung ist nicht immer sehr hilfreich, aber sehr oft gibt R die Zeilennummer an wo der Fehler begonnen hat. RStudio hilft mit einem roten X neben der Zeilennummer oder einer rot unterkringelten Klammer.
+
+* Als nächstes hilft leider nur genaues Lesen des Codes und ausbessern.
+
+* Sie können auch die Fehlermeldung googlen. Gerade auf stack overflow gibt es andere User mit dem gleichen Problem. Sie sind sicher nicht allein mit dem Problem!
+
 ---
 class: inverse
 # Übung 6
@@ -58,7 +81,6 @@ Die Lösungsskript für die Übung 6 finden Sie ab Mittwoch 13:00 auf moodle.
 
 Das Lösungsskript ist als html-Report abgespeichert. Es beinhaltet alle Befehle / Funktionen und den Output in einem Dokument.
 
-*Falls Sie selbst ein R-Skript als Report speichern wollen, dann nutzen Sie das "compile-report" addin von RStudio (https://rmarkdown.rstudio.com/articles_report_from_r_script.html). Anstelle des Befehls können Sie auch den Button am oberen Rand des Skript-Fensters verwenden (sieht wie ein kleines Notizbuch aus).* 
 ---
 class: inverse, middle, centre
 # Was haben wir letzte Woche gelernt?
@@ -70,15 +92,17 @@ knitr::include_graphics("figures/dplyr.jpeg")
 .footnote[Source: Chris Vaccaro https://medium.com/@chrisvaccaro_78233/the-absolute-fastest-way-to-learn-r-for-data-science-606ab2b28b7e/]
 ---
 # dplyr - Datenaufbereitung
-* Mit `%>%` können Befehle hintereinander gereiht werden. Vor der ersten `%>%` muss spezifiziert werden auf welchen Dataframe sich die nachfolgende Funktionen beziehen (Im Beispiel: `socx_data`).
-* Mit `select()` werden Variablen (Spalten) ausgewählt. Der Vorteil von `select()` aus dplyr ist, dass die Auswahl per Variablennamen und nicht per Position funktioniert.
-* Mit `filter()`werden Beobachtungen (Zeilen) ausgewählt. Die nachfolgende Behfehl beziehen sich auf die ausgewählten Zeilen.
+`dplyr` ist Teil des `tidyverse`-Pakets. Am Anfang des Skripts `library(tidyverse)` laden!
+* Mit `%>%` können Befehle hintereinander gereiht werden. Vor der ersten `%>%` muss spezifiziert werden auf welchen Dataframe sich die nachfolgende Funktionen beziehen (im Beispiel: `socx_data`).
+* Mit `select()` werden Variablen (Spalten) ausgewählt. Der Vorteil von `select()` ist, dass die Auswahl per Variablennamen und nicht per Position funktioniert.
+* Mit `filter()`werden Beobachtungen (Zeilen) ausgewählt. Die nachfolgende Behfehle beziehen sich auf die ausgewählten Zeilen.
 * Mit `rename()` können Variablen umbenannt werden.
-* Mit `mutate()` werden neue Variable erstellt oder existierende bearbeitet und überschrieben.
+* Mit `mutate()` werden neue Variable erstellt oder existierende Variablen bearbeitet und überschrieben.
 * Mit `drop_na()` werden alle Zeilen ohne Wert gelöscht.
-* `arrange()` ordnet den Datensatz basierend auf einer oder mehreren Variablen. In der Grundeinstellung wird der Datensatz aufsteigend angeordnet mit `-` vor dem Variablennamen wird der Datensatz absteigend angeordnet.
+* `arrange()` ordnet den Datensatz basierend auf einer oder mehreren Variablen neu an. In der Grundeinstellung wird der Datensatz aufsteigend angeordnet mit `-` vor dem Variablennamen wird der Datensatz absteigend angeordnet.
 ---
 # logische Operatoren in R
+Für die `filter()` und `select()` Befehle werden logische Operatoren benötigt, um R zu sagen welche Variablen oder Zeilen ausgewählt werden sollen.
 
 | Operatoren | Beschreibung                                                |
 | :--------- | :---------------------------------------------------------- |
@@ -89,26 +113,39 @@ knitr::include_graphics("figures/dplyr.jpeg")
 | >          | größer                                                      |
 | <=         | kleiner gleich                                              |
 | >=         | größer gleich                                               |
-| `%in%`     | wält Elementen aus einer Menge `c()` aus, zB für `filter()` |
+| `%in%`     | wählt Elementen aus einer Menge `c()` aus, zB für `filter()` |
 
-Zur Verknüpfung von logischen Tests können Sie `|` für *oder* und `&` für *und* verwenden
+Zur Verknüpfung von logischen Tests können Sie `|` für *oder* und `&` für *und* verwenden.
 ---
 # dplyr - Gruppieren & Zusammenfassen
-* Mit `group_by()` wird der Datensatz nach den Werten der ausgewählten Variable gruppiert. Alle folgende Berechnungen werden für jede Gruppen separat gemacht.
-* Mit `summarise()` können unterschiedliche Kennzahlen wie `mean()` oder `min()` und `max()` berechnet werden. **Das behandeln wir heute tiefer.**
+* Mit `group_by()` wird der Datensatz nach den Werten der ausgewählten Variable gruppiert. Alle folgende Berechnungen werden für jede Gruppe separat durchgeführt
+* Mit `summarise()` können unterschiedliche Kennzahlen wie `mean()` oder `min()` und `max()` berechnet werden. **Das behandeln wir heute genauer**.
 ---
 # dplyr - Beispiel
 ```{r, eval=FALSE}
+library(tidyverse)
+# load dataset
+socx_data <- read_csv("_raw/SOCX_AGG_31032020142101957.csv") # import dataframe
+
 # clean data
 socx_data <- socx_data %>%            # select dataframe and replace dataframe
   select(COUNTRY, YEAR, Value) %>%    # select essential variables
   rename(fampol_exp_pct = Value) %>%  # rename Value Variable
   mutate(fampol_exp_pct = fampol_exp_pct / 100) # recode expenditure variable: 0-1 instead of 0-100
 
-# average public expenditure on family policy for Austria (2000 - 2015)
+# average public expenditure on family policy for Germany (2000 - 2015)
 socx_data %>%                     # select dataframe
-  filter(COUNTRY == "AUS") %>%    # select only Austrian data
+  filter(COUNTRY == "DEU") %>%    # select only German data
   summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) # specify mean()
+```
+---
+# dplyr - Beispiel
+Die Befehle zeigen sehr gut den Unteschied zwischen `==` und `=` in R:
+* `==` ist eine logische Aussage. Hier ist die logische Aussage `COUNTRY == "DEU"` welche mit `TRUE` und `FALSE` beantwortet wird. R wählt alle Zeilen mit `TRUE` aus.
+* `=` bedeutet bei `mutate()`, dass die neue Variable `fampol_exp_pct` aus `fampol_exp_pct / 100` besteht. Hier legt `=` den Inhalt fest.
+---
+# dplyr - Beispiel
+```{r, eval=FALSE}
 
 # average public expenditure on family policy for all countries in sample (2000 - 2015)
 mean_fampol_exp_by_country <-  socx_data %>%    # select dataframe and save results in "mean_fampol_exp_by_country"
@@ -116,12 +153,13 @@ mean_fampol_exp_by_country <-  socx_data %>%    # select dataframe and save resu
   summarise(mean_fampol_exp_pct = mean(fampol_exp_pct)) %>% # specify mean(), applied to each country
   print()                                       # print results first 10 values
 
-# top 5 countries with most family policy expenditure in 2010
+# top 5 countries with most family policy expenditure in 2000
 socx_data %>%                   # select dataframe
-  filter(YEAR == 2010) %>%      # select onle 2010 values
+  filter(YEAR == 2000) %>%      # select only 2000 values
   arrange(-fampol_exp_pct) %>%  # arrange data ascending by family policy expenditure in 2010
   head( n = 5)                  # print first 5 values
 ```
+
 ---
 # tidy Data
 **Jede Zeile eine Beobachtung, jede Spalte eine Variable, jede Zelle ein Wert**.
@@ -133,12 +171,21 @@ knitr::include_graphics("figures/tidy-1.png ")
 
 .footnote[Source: https://r4ds.had.co.nz/tidy-data.html]
 ---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
+
+![moodle_forum](figures/forum_moodle.png)
+
+Nutzen Sie auch unsere **R Sprechstunde**.  
+Jeden Donnerstag von 11:00 bis 11:45 auf zoom (link finden Sie auf moodle).
+
+---
 class: inverse, middle, centre
 # Deskriptive Statistik: Einzelvariablen
 ---
 # Datensatz für die heutige Sitzung
 * Die folgende Beispiele basieren wieder auf dem OECD SOCX Datensatz der letzten Woche.
-* Zusätzlich zu den insgesamten öffentlichen Ausgaben für Familienpolitik, beinhaltet der Datensatz jetzt auch Informationen zu den öffentlichen Ausgaben für die einzelnen familienpolitischen Instrumenten (alle Variablen sind in % BIP).  
+* Zusätzlich zu den insgesamten öffentlichen Ausgaben für Familienpolitik, beinhaltet der Datensatz jetzt die Ausgaben für die einzelnen familienpolitischen Instrumente (alle Variablen sind in % BIP).  
 ```{r import, include = FALSE}
 library(tidyverse)
 socx_data <- read_csv("_raw/SOCX_AGG_20042020191205895.csv")
@@ -160,34 +207,327 @@ socx_data <- socx_data %>%
                                "Family - Other benefits in kind" = "other_services")) %>%
   mutate(UNIT = recode(UNIT, "PCT_GDP" = "pct_gdp")) %>%
   filter(Branch == "family") %>%
+  filter(COUNTRY != "OECD") %>%
   mutate(varnames = paste(Branch, `Type of Expenditure`, `Type of Programme`, UNIT, sep = "_")) %>%
   select(COUNTRY, YEAR, varnames, Value) %>%
   spread(varnames, Value)
 ```
-```{r var names,}
+---
+# Datensatz für die heutige Sitzung
+```{r load preliminaries, eval = FALSE}
+library(tidyverse)
+socx_data <- read_csv("_raw/SOCX_AGG_20042020191205895.csv")
+```
+```{r var names}
 variable.names(socx_data)
 ```
+*Sie finden die Daten auf moodle.*
 ---
 # Deskriptive Statistik mit dplyr
-* `summarise()` fasst einen Vektor oder eine Variable im Dataframe zu einer oder mehreren Werten zusammen.
-* `summarise()` berechnet Lagemaße und auch Streuungsmaße, wie zB:
+`summarise()` ist die Grundfunktion von `dplyr` für die Berechnung von deskriptiven Statistikmaßen:
+* `summarise()` fasst eine Variable im Dataframe zu einem oder mehreren Werten zusammen.
+* `summarise()` berechnet Lagemaße und auch Streuungsmaße, wie zB<sup>1</sup>:
   * Center: mean(), median()
   * Spread: sd(), IQR(), mad()
   * Range: min(), max(), quantile()
   * Position: first(), last(), nth(),
   * Count: n(), n_distinct()
-  * Logical: any(), all()
-* In `summarise` können Sie auch eigene Maße berechnen, die auf den Funktionen basieren.
-* `summarise()` ist Teil von dplyr, d.h. es ist kompatibel mit `%>%`, berücksichtigt `group_by` und gibt ein Dataframe aus.
+* In `summarise` können Sie auch eigene Maße berechnen, die auf diesen Funktionen basieren (zB die Differenz des Durschnitts einer Variable und dem Durchschnitt einer zweiten Variable).
+* `summarise()` ist Teil des `dplyr`-Pakets, d.h. es ist kompatibel mit `%>%`, berücksichtigt `group_by` und gibt ein Dataframe aus.
+
+
+.footnote[
+[1] In der Lektüre zur heutigen Sitzung werde die Lagemaße und Streuungsmaße nochmal genau erläutert. Bitte schauen Sie in Sauer: S. 103-112 nach, falls Ihnen die Bedeutungen nicht ganz klar sind.]
 ---
-# Deskriptive Statistik mit dplyr
+# summarise()
+Die Schreibweise der `summarise()` Funktion folgt einem simplem System:
+* Der verwendete Dataframe wird entweder mit `%>%` vor `summarise()` definiert oder direkt im Befehl an erster Stelle: `summarise(.data, ...)` (diese Logik gilt für alle `tidyverse` Funktionen).
+* Als nächstes müssen die Maße definiert werden, die berechnet werden sollen:
+  * Zuerst den Namen des Maßes definieren (Sie haben hier volle Freiheit - außer Umlaute) zB: `niedrigste = `
+  * Dann die Funktion definieren mit der das Maß berechnet wird `niedrigste = min()` 
+  * Dann die Variable auswählen auf die sich die Funkion beziehen soll `niedrigste = min(family_service_childcare_pct_gdp)`
+  * Nach einem `,` können sie das nächste Maß berechen. Es kann eine komplett andere Funktion sein und sich auf eine andere Variable beziehen.
+* Das Ergebnis ist ein Dataframe mit einem Wert pro Maß
+* Sie können das Ergebnis abspeichern, dafür muss am Anfang der `%>%`-Kette ein Namen definiert und mit `<-` zugewießen werden: `descriptives <- ...`
+---
+# summarise() - Lagemaße
+Wir arbeiten mit dem `dplyr` Paket und Funktionen aus anderen Paketen des tidyverse. Deshalb laden wir am Anfang das `tidyverse`, wodurch `dplyr` auch gleich geladen wird.
+```{r tidyverse, eval=FALSE}
+library(tidyverse)
+```
 ```{r summarise 1,}
-# Der niedrigsten und höchsten Ausgaben im Jahr 2015 für formale Kinderbetreuung
-socx_data %>%
-  filter(YEAR == 2010) %>%
-  summarise(niedrigste = min(family_service_childcare_pct_gdp), 
+# Die niedrigsten, mittleren und höchsten Ausgaben 
+# für formale Kinderbetreuung im Jahr 2015 der OECD Länder
+descriptives <- socx_data %>%
+  filter(YEAR == 2015) %>%
+  summarise(niedrigste = min(family_service_childcare_pct_gdp),
+            mittlere = median(family_service_childcare_pct_gdp),
             hoechste = max(family_service_childcare_pct_gdp))
+print(descriptives)
+```
+---
+# summarise() - fehlende Werte
+**Vorsicht**:   
+
+Die meisten Funktionen für deskriptive Statistik wie `median()`, `min()`, `max()` oder `median()` haben die Grundeinstellung `na.rm = FALSE`. Falls sich in den Daten der ausgewählten Variable ein fehlender Wert befindet, gibt R eine Fehlermeldung (siehe Beispiel auf der)  
+
+Die `family_service_accomodation_pct_gdp` Variable existiert nicht für alle Länder, deshalb sind einige NAs in der Variable. R berechnet deshalb die Maße nicht.
+```{r summarise 2}
+socx_data %>%
+  filter(YEAR == 2015) %>%
+  summarise(niedrigste = min(family_service_accomodation_pct_gdp),
+            mittlere = median(family_service_accomodation_pct_gdp),
+            hoechste = max(family_service_accomodation_pct_gdp))
+```
+---
+# summarise() - fehlende Werte
+Sie können entweder die ganze Zeile mit `drop_na()` löschen oder innerhalb der Funktion `na.rm = TRUE` einstellen, jetzt berücksichtigt die Funktion die fehlende Werte nicht (zB `niedrigste = min(family_service_accomodation_pct_gdp, na.rm = TRUE`)). `na.rm = TRUE` ist zwar sehr praktisch, aber es ist nicht ganz eindeutig welche Zeilen jetzt wegfallen. 
+```{r summarise 2a}
+socx_data %>%
+  filter(YEAR == 2015) %>%
+  summarise(niedrigste = min(family_service_accomodation_pct_gdp, 
+                             na.rm = TRUE),
+            mittlere = median(family_service_accomodation_pct_gdp, 
+                              na.rm = TRUE),
+            hoechste = max(family_service_accomodation_pct_gdp, 
+                           na.rm = TRUE))
+```
+---
+# summarise() - fehlende Werte
+Mehr Kontrolle hat man, wenn man vorher die Zeilen mit fehlende Werte per `drop_na()` löscht, das kann zB direkt nach  `filter()` gemacht werden.
+```{r summarise 2b}
+socx_data %>%
+  filter(YEAR == 2015) %>%
+  drop_na(family_service_accomodation_pct_gdp) %>%
+  summarise(niedrigste = min(family_service_accomodation_pct_gdp), 
+            mittlere = median(family_service_accomodation_pct_gdp), 
+            hoechste = max(family_service_accomodation_pct_gdp)) 
+```
+---
+# summarise() - Streuungsmaße
+Mit `summarise()` können auch mehrere Variablen verglichen werden, zB anhand von Streuungsmaßen. 
+
+Sie können zB überprüfen, ob alle Länder im Sample im Jahr 2015 für die unterschiedlichen familienpolitische Instrumente ähnlich viel oder unterschiedlich viel ausgegeben haben. 
+
+Haben Barleistungen & Karenz im Jahr 2015 eine kleinere oder größere Streuung als Sachleistungen? Bei welchen Ausgaben ähneln sich die Länder mehr?
+---
+# summarise() - Streuungsmaße
+```{r summarise 3}
+socx_data %>%
+  filter(YEAR == 2015) %>%
+  summarise(Var_cash = var(family_cash_total_pct_gdp),
+            Var_services = var(family_service_total_pct_gdp),
+            sd_cash = sd(family_cash_total_pct_gdp),
+            sd_services = sd(family_service_total_pct_gdp),
+            IQR_cash = IQR(family_cash_total_pct_gdp),
+            IQR_services = IQR(family_service_total_pct_gdp))
 ```
 
+*Die unterschiedlichen Streuungsmaße (Varianz = `var()`, Standardabweichung = `sd()`, Abstand zwischen dem 75%- und 25%-Quartil = `IQR()`) sind für Sachleistungen (services) niedriger als für Barleistungen & Karenz (cash). D.h.: im Jahr 2015 hatten die OECD Länder ähnlichere Ausgaben für Sachleistungen als für Barleistungen & Karenz.* 
+---
+# summarise() - Lagemaße
+Streuungsmaße allein zeigen nur das halbe Bild. 
+Die Ausgaben für Sachleistungen sind zwar ähnlicher, aber wie hoch sind Ausgaben für Sachleistungen im Vergleich zu Barleistungen & Karenz? Lagemaße stellen das dar.
+---
+# summarise() - Lagemaße
+```{r summarise 4}
+socx_data %>%
+  filter(YEAR == 2015) %>%
+  summarise(min_cash = min(family_cash_total_pct_gdp),
+            min_services = min(family_service_total_pct_gdp),
+            mean_cash = mean(family_cash_total_pct_gdp),
+            mean_services = mean(family_service_total_pct_gdp),
+            max_cash = max(family_cash_total_pct_gdp),
+            max_services = max(family_service_total_pct_gdp))
+```
+*Die OECD Länder haben durchschnittlich weniger für Sachleistungen als für Barleistungen & Karenz ausgegeben. D.h.: Ausgaben für Sachleistungen der OECD Länder im Jahr 2015 waren ähnlicher als Barleistungen aber auch niedriger. Es gibt mehr Unterschiede bei Ausgaben für Barleistungen, die aber auch durschnittlich höher als Ausgaben für Sachleistungen sind. Nächste Woche werden wir das mit Boxplots noch besser erkennbar machen.* 
+---
+# summarise() & Gruppierungen
+Unser Datensatz ist eine Zeitreihe mit Daten von 2000 bis 2015 für jedes OECD Land. Wir können damit auch Veränderungen der Länder zwischen 2000 und 2015 für die unterschiedlichen familienpolitischen Instrumente vergleichen. Mit `group_by()` aus dem `dplyr`-Paket sagen Sie der `summarise()`-Funktion für welche Gruppen die Lage- und Streuungsmaße berechnet werden sollen.
+```{r summarise group_by 1, eval=FALSE}
+socx_data %>%
+  filter(YEAR >= 2000 & YEAR <= 2015) %>%
+  group_by(COUNTRY) %>%
+  summarise(Var_cash = var(family_cash_total_pct_gdp),
+            Var_services = var(family_service_total_pct_gdp),
+            sd_cash = sd(family_cash_total_pct_gdp),
+            sd_services = sd(family_service_total_pct_gdp),
+            IQR_cash = IQR(family_cash_total_pct_gdp),
+            IQR_services = IQR(family_service_total_pct_gdp))
+```
+---
+# summarise() & Gruppierungen
+```{r summarise group_by 1a, echo=FALSE}
+DT::datatable(
+    socx_data %>%
+  filter(YEAR >= 2000 & YEAR <= 2015) %>%
+  group_by(COUNTRY) %>%
+  summarise(sd_cash = round(sd(family_cash_total_pct_gdp),3),
+            sd_services = round(sd(family_service_total_pct_gdp),3),
+            IQR_cash = round(IQR(family_cash_total_pct_gdp),3),
+            IQR_services = round(IQR(family_service_total_pct_gdp),3)),
+  options = list(pageLength = 7))
+```
+---
+# summarise() & Gruppierungen
+*Es zeigt sich schon, dass die Streuungen zwischen den Ländern sehr unterschiedlich sind.*
 
+*Es gibt Länder wie die USA die eine geringe Streuung bei Bar-  und Sachleistungen haben, d.h. die Ausgaben von Jahr zu Jahr je Sach- und Barleistung waren zwischen 2000 und 2015 ähnlich.*
 
+*Es gibt aber auch Länder wie Korea mit einer großen Streuung bei Sachleistungen und einer niedrige Streuung bei Barleistungen. In Österreich ist die Streuung gerade umgekehrt.*
+
+*Die Veränderungen je familienpolitischen Instrument sind zwischen den Ländern sehr unterschiedlich.*
+
+Um das besser vergleichen zu können, sollten wir uns noch die Lagemaße anschauen.
+Und in einem zweiten Schritt die Werte für 2000 und 2015, also am Anfang und Ende der Zeitreihe, vergleichen.
+---
+# summarise() & Gruppierungen
+```{r summarise group_by 2, eval=FALSE}
+socx_data %>%
+  filter(YEAR >= 2000 & YEAR <= 2015) %>%
+  group_by(COUNTRY) %>%
+  summarise(min_cash = min(family_cash_total_pct_gdp),
+            min_services = min(family_service_total_pct_gdp),
+            max_cash = max(family_cash_total_pct_gdp),
+            max_services = max(family_service_total_pct_gdp),
+            mean_cash = max(family_cash_total_pct_gdp),
+            mean_services = max(family_service_total_pct_gdp),
+            med_cash = median(family_cash_total_pct_gdp),
+            med_services = median(family_service_total_pct_gdp)))
+```
+---
+# summarise() & Gruppierungen
+```{r summarise group_by 2a, echo=FALSE}
+DT::datatable(
+    socx_data %>%
+  filter(YEAR >= 2000 & YEAR <= 2015) %>%
+  group_by(COUNTRY) %>%
+  summarise(min_cash = min(family_cash_total_pct_gdp),
+            min_services = min(family_service_total_pct_gdp),
+            max_cash = max(family_cash_total_pct_gdp),
+            max_services = max(family_service_total_pct_gdp)),
+    options = list(pageLength = 7))
+```
+---
+# summarise() & Gruppierungen
+```{r summarise group_by 2b, echo=FALSE}
+DT::datatable(
+    socx_data %>%
+  filter(YEAR >= 2000 & YEAR <= 2015) %>%
+  group_by(COUNTRY) %>%
+  summarise(mean_cash = round(mean(family_cash_total_pct_gdp),2),
+            mean_services = round(mean(family_service_total_pct_gdp),2),
+            med_cash = round(median(family_cash_total_pct_gdp),2),
+            med_services = round(median(family_service_total_pct_gdp),2)),
+    options = list(pageLength = 7))
+```
+---
+# summarise() & Gruppierungen
+*Die Lagemaße verfestigen das Bild, dass wir schon von der Analyse des Jahres 2015 bekommen haben. Die Spannweite bei den Sachleistungen ist niedriger als die Spannweite der Ausgaben für Barleistungen & Karenz.*
+
+Das Minimum und das Maximum darf aber nicht als Start- und Endwert der Zeitreihe von 2000 bis 2015 interpretiert werden. Es kann sein, dass in einem Land die Ausgaben konstant stiegen, in einem anderen Land die Ausgaben konstant sanken oder schwankten. Am besten erkennt man das mit einer Visualiseerung des zeitlichen Verlaufs (kommt in den nächsten Wochen). 
+
+Wir schauen uns jetzt die Werte für 2000 und 2015 getrennt an. Daraus kann man erste Indizien ziehen von wo bis wohin sich die Ausgaben pro Land entwickelt haben. 
+---
+# summarise() & Gruppierungen
+Um die Daten von 2000 und 2015 vergleichen zu können, generieren wir ein neues Dataframe nur mit den Werten von 2000 und 2015. D.h. wir löschen alle Zeilen außer den zwei Jahren. Damit haben wir den Start- und Endwert der Zeitreihe. 
+```{r summarise group_by 3, eval=FALSE}
+socx_2000_2015 <- socx_data %>%
+  filter(YEAR == 2000 | YEAR == 2015) %>%
+  select(COUNTRY, YEAR, family_cash_total_pct_gdp, family_service_total_pct_gdp) %>%
+  print()
+```
+---
+# summarise() & Gruppierungen
+```{r summarise group_by 3a, echo=FALSE}
+socx_2000_2015 <- socx_data %>%
+  filter(YEAR == 2000 | YEAR == 2015) %>%
+  select(COUNTRY, YEAR, family_cash_total_pct_gdp, family_service_total_pct_gdp)
+DT::datatable(socx_2000_2015, colnames = c("COUNTRY", "YEAR", "family_cash_<br>total_pct_gdp", "family_services_<br>total_pct_gdp"),
+                  options = list(pageLength = 7))
+```
+---
+# summarise() & Gruppierungen
+Die Werte für 2000 und 2015 zeigen, dass die Entwicklung zwischen 2000 und 2015 in einigen Ländern angestiegen und in anderen Ländern gesunken sind. Die Streuungsmaße und Lagemaße haben diese unterschiedlichen Entwicklungen nicht dargestellt. Deshalb ist es bei der deskriptiven Analyse immer wichtig auch nochmal in die Daten direkt zu schauen und ausgewählte Werte genauer zu betrachten.
+
+*(Wir können die die Entwicklung nochmals genauer anschauen und die Differenz zwischen dem Wert im Jahr 2015 und 2000 berechnen, das ist aber ein wenig komplizierter. Bei interesse kann ich das gerne in den nächsten Wochen zeigen).*
+---
+# Relative Häufigkeiten
+Um herauszufinden ob die Länder in einem Jahr mehr für Sachleistungen oder Barleistungen & Karenz ausgeben, können wir schauen in welchem Verhältnis diese zu den Gesamtausgaben stehen. 
+
+Dazu wird mit `mutate()` zwei neue Variablen erstellt, in denen das Verhältnis der zwei familienpolitischen Instrumenten pro Land für das Jahr 2015 berechnet wird (ohne `filter(YEAR==2015)` würde R das für jedes Jahr berechnen). Der neue Datensatz beinhaltet nur Daten für das Jahr 2015, also eine Zeile ist gleich ein Land im Jahr 2015.
+```{r relative 1, eval = FALSE}
+socx_2015 <- socx_data %>%
+  filter(YEAR == 2015) %>%
+  mutate(cash_prop = (family_cash_total_pct_gdp / family_total_total_pct_gdp) * 100) %>%
+  mutate(services_prop = (family_service_total_pct_gdp / family_total_total_pct_gdp) * 100)
+```
+*Hier kann `group_by(COUNTRY)` weggelassen werden, weil R die neuen Werte für jede Zeile berechnet und das ist automatisch ein Land im Jahr 2015.*
+---
+# Relative Häufigkeiten
+```{r relative 1a, echo=FALSE}
+socx_2015 <- socx_data %>%
+  filter(YEAR == 2015) %>%
+  mutate(cash_prop = (family_cash_total_pct_gdp / family_total_total_pct_gdp) * 100) %>%
+  mutate(services_prop = (family_service_total_pct_gdp / family_total_total_pct_gdp) * 100)
+
+DT::datatable(
+socx_2015 %>%
+  select(COUNTRY, cash_prop, services_prop) %>%
+  mutate(cash_prop = round(cash_prop, 2)) %>%
+  mutate(services_prop = round(services_prop, 2)),
+                  options = list(pageLength = 7))
+```
+---
+# Relative Häufigkeiten
+Um das Verhältnis in Zusammenhang zu den anderen Ländern zu setzen können wir das arithmetische Mittel berechnen und dann im zweiten Schritt schauen, um wie viel Prozentpunkte jedes Land vom OECD Durschnitt abweicht.
+
+*Wir müssen das Jahr nicht filtern, da unser neuer Datensatz `socx_2015` nur Werte für 2015 beinhaltet.*
+```{r relativ 2,}
+socx_2015 %>%
+  summarise(mean_cash_prop =  mean(cash_prop), 
+            mean_services_prop = mean(services_prop))
+```
+*Durschnittlich gaben die OECD Länder mehr für Barleistungen & Karenz aus als für Sachleistungen.*
+---
+# Relative Häufigkeiten
+Um wie viel Prozentpunkte weichen die Länder von diesem OECD Durchschnitt ab?
+```{r relativ 3, eval = FALSE}
+socx_2015 <- socx_2015 %>%
+  mutate(cash_prop_diff = cash_prop - mean(cash_prop)) %>%
+  mutate(services_prop_diff = services_prop - mean(services_prop))
+```
+*Hier kann `group_by(COUNTRY)` weggelassen werden, weil R die neuen Werte für jede Zeile berechnet und das ist automatisch ein Land im Jahr 2015.*
+---
+# Relative Häufigkeiten
+```{r relative 3a, echo=FALSE}
+socx_2015 <- socx_2015 %>%
+  mutate(cash_prop_diff = cash_prop - mean(cash_prop)) %>%
+  mutate(services_prop_diff = services_prop - mean(services_prop))
+
+DT::datatable(
+socx_2015 %>%
+  select(COUNTRY, cash_prop_diff, services_prop_diff) %>%
+  mutate(cash_prop_diff = round(cash_prop_diff, 2)) %>%
+  mutate(services_prop_diff = round(services_prop_diff, 2)),
+                  options = list(pageLength = 7))
+```
+---
+# Übung 7 - optional
+Die Übung 7 für diese Woche ist freiwillig. Ich gebe Ihnen gerne Feedback auf Ihre Abgabe, aber Sie müssen nichts abgeben. Falls Sie nichts abgeben, zählt das nicht zu Ihren 4 freien Nicht-Abgaben.
+
+* Laden Sie den Datensatz "SOCX_AGG_20042020191205895.csv" von moodle und importieren Sie diesen in R (Vergessen Sie nicht die notwendigen Pakete am Anfang des Skripts zu laden).
+* Wählen Sie eine Variable Ihrer Wahl.
+* Filtern Sie den Datensatz, so dass die Variable nur für ein Jahr Ihrer Wahl ausgegeben wird.
+* Berechnen Sie ein passendes Lagemaß und ein passendes Streuungsmaß für dieses Jahr.
+* Verwenden Sie `group_by` und einen Zeitraum Ihrer Wahl (Sie müssen dafür den ungefilterten Datensatz verwenden).
+* Berechnen Sie für den Zeitraum ein Lagemaß und ein Streuungsmaß für jedes Land getrennt.
+* Laden Sie ihr R-Skript bis Mittwoch 29.04. 12:00 auf moodle.
+---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
+
+![moodle_forum](figures/forum_moodle.png)
+
+Nutzen Sie auch unsere **R Sprechstunde**.  
+Jeden Donnerstag von 11:00 bis 11:45 auf zoom (link finden Sie auf moodle).
