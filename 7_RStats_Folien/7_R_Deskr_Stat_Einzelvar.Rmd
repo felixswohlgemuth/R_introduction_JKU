@@ -522,7 +522,7 @@ Die Übung 7 für diese Woche ist freiwillig. Ich gebe Ihnen gerne Feedback auf 
 * Berechnen Sie ein passendes Lagemaß und ein passendes Streuungsmaß für dieses Jahr.
 * Verwenden Sie `group_by` und einen Zeitraum Ihrer Wahl (Sie müssen dafür den ungefilterten Datensatz verwenden).
 * Berechnen Sie für den Zeitraum ein Lagemaß und ein Streuungsmaß für jedes Land getrennt.
-* Laden Sie ihr R-Skript bis Mittwoch 29.04. 12:00 auf moodle.
+* Laden Sie ihr R-Skript bis Mittwoch 29.04. 12:00 auf moodle hoch.
 ---
 class: center, middle
 Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
