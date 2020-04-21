@@ -17,7 +17,7 @@ output:
 ---
 class: inverse, middle 
 ### Datenanalyse mit R
-# # 6 Beschreibende Statistik: Einzelvariablen
+# # 7 Beschreibende Statistik: Einzelvariablen
 ### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
 ### 23.04.2020
 ![logo](figures/gespol_logo.png)
