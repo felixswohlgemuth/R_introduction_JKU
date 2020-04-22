@@ -1,7 +1,7 @@
-### title: Übung 6 ####
+### title: Uebung 6 ####
 ### topic: Daten aufbereiten
 ### author: Felix Wohlgemuth
-### date: 20.04.2020
+### date: 22.04.2020
 
 
 ### Preliminaries  ####
@@ -24,23 +24,17 @@ socx_data <- socx_data %>%             # select dataframe and replace dataframe
 
 
 ### task 2 ####
-# Berechnen Sie die durchschnittlichen Ausgaben für Familienpolitik in Österreich im Zeitraum 2000 - 2015
+# Berechnen Sie die durchschnittlichen Ausgaben fuer Familienpolitik in oesterreich im Zeitraum 2000 - 2015
 
 # average public expenditure on family policy for Austria (2000 - 2015)
 socx_data %>%                                                       # select dataframe
   filter(COUNTRY == "AUS") %>%                                      # select only Austrian data
   summarise(mean_fampol_exp_total_pct = mean(fampol_exp_total_pct)) # specify mean()
 
-# average public expenditure on family policy for all countries in sample (2000 - 2015)
-mean_fampol_exp_by_country <-  socx_data %>%                            # select dataframe and save results in "mean_fampol_exp_by_country"
-  group_by(COUNTRY) %>%                                                 # group by countries
-  summarise(mean_fampol_exp_total_pct = mean(fampol_exp_total_pct)) %>% # specify mean(), applied to each country
-  print()                                                               # print results first 10 values
-
 
 
 ### task 3 ####
-# Welche fünf Länder haben im Jahr 2010 am meisten für Familienpolitik ausgegeben (in % des BIPs)?
+# Welche fuenf Laender haben im Jahr 2010 am meisten fuer Familienpolitik ausgegeben (in % des BIPs)?
 # Speichern Sie die Ergebnisse als # Kommentar im Skript.
 
 socx_data %>%                         # select dataframe
