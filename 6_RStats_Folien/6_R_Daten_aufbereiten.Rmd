@@ -13,23 +13,23 @@ output:
       highlightLines: true
       highlightSpans: true
       countIncrementalSlides: false
-      
+
 ---
-class: inverse, middle 
+class: inverse, middle
 ### Datenanalyse mit R
 # # 6 Daten aufbereiten
 ### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
 ### 02.04.2020
 ![logo](figures/gespol_logo.png)
 ---
-class:inverse, middle 
+class:inverse, middle
 # 6 ist das neue 5
-## Die 5.Sitzung wäre das Mittwochskolloquium mit Julian Garritzmann gewesen. Um die Struktur des Syllabus einzuhalten, überspringen wir die 5.Sitzung. Inhaltlich knüpfen wir direkt an die letzte Woche an.  
+## Die 5.Sitzung wäre das Mittwochskolloquium mit Julian Garritzmann gewesen. Um die Struktur des Syllabus einzuhalten, überspringen wir die 5.Sitzung. Inhaltlich knüpfen wir direkt an die letzte Woche an.
 
 Julian Garritzmann arbeitet auch mit R. Er veröffentlicht seine Daten als .rds und seine R Skripte. Sie können seine lezte Publikation einfach nachbauen: https://ejpr.onlinelibrary.wiley.com/doi/full/10.1111/1475-6765.12371 (Supporting Information am Ende der Seite)
 ---
 # Übung 4
-Danke für Ihre Skripts und auch Danke, dass Sie sich an der Forumsdiskussion beteiligt haben! Ich hoffe Sie konnten alle eine Lösung für ihr Problem finden.  
+Danke für Ihre Skripts und auch Danke, dass Sie sich an der Forumsdiskussion beteiligt haben! Ich hoffe Sie konnten alle eine Lösung für ihr Problem finden.
 
 Das ist eine Möglichkeit die Übung 4 zu machen:
 ```{r uebung4 1, echo=TRUE, eval=FALSE}
@@ -50,13 +50,13 @@ View(wfpi)
 dim(wfpi)
 str(wfpi)
 
-# Der Datensatz besteht aus 13 Variablen 
+# Der Datensatz besteht aus 13 Variablen
 # zu unterschiedlichen Aspekten von Familienpolitik
 
 # 23 Beobachtungen jeweils ein Land-Jahr
 # (und 2 zusätzliche Zeilen die keine Beobachtung sind)
 
-# R hat die meisten Variablen richtig als 
+# R hat die meisten Variablen richtig als
 # numerische Variablen importiert
 ```
 ---
@@ -68,7 +68,7 @@ str(wfpi)
 
 ## Variablennamen kürzen und anstatt Leerzeichen Unterstriche
 
-## Zwei numerische Variablen wurden falsch als character importiert 
+## Zwei numerische Variablen wurden falsch als character importiert
 ## die müssen umgewandelt werden
 
 ## Zeile 23 -24 sind keine Beobachtungen sondern Fussnoten
@@ -131,7 +131,7 @@ library(readxl)
 wfpi <- read_excel("_raw/resources-other-work-family-policy-indicators.xls", skip = 4)
 ```
 
-Am besten sind aber .csv Dateien mit R kompatibel. Falls Sie Probleme mit .xls und .xlsx Daten in R haben, können Sie die Excel Tabelle auch außerhalb R für den Import vorbereiten. Öffnen Sie die Tabelle in Excel oder einem anderen Tabellenkalkulationsprogramm. Ändern sie die Tabelle, so dass die erste Zeile alle Spaltennamen enthält. Speichern Sie die Tabelle als .csv. Das neue Dateiformat sollte ohne Probleme in R importierbar sein. Sie sollten Ihre Schritte notieren. Wenn Sie es im R Skript machen, können Sie jeden Ihrer Schritte nachvollziehen. In Excel nach ein paar Wochen vielleicht nicht mehr. 
+Am besten sind aber .csv Dateien mit R kompatibel. Falls Sie Probleme mit .xls und .xlsx Daten in R haben, können Sie die Excel Tabelle auch außerhalb R für den Import vorbereiten. Öffnen Sie die Tabelle in Excel oder einem anderen Tabellenkalkulationsprogramm. Ändern sie die Tabelle, so dass die erste Zeile alle Spaltennamen enthält. Speichern Sie die Tabelle als .csv. Das neue Dateiformat sollte ohne Probleme in R importierbar sein. Sie sollten Ihre Schritte notieren. Wenn Sie es im R Skript machen, können Sie jeden Ihrer Schritte nachvollziehen. In Excel nach ein paar Wochen vielleicht nicht mehr.
 ---
 # Was haben wir letzte Woche gelernt?
 **Daten exportieren: .xls / .xlsx**
@@ -173,26 +173,26 @@ saveRDS(MaternityDB, file = "data/MaternityDB.rds")
 save(MaternityDB, country, NOR, file = "data/Maternity_session2603.rdata")
 ```
 ---
-class: inverse, middle 
+class: inverse, middle
 # # 6 Daten aufbereiten
 ---
-# Daten aufbereiten mit dplyr 
+# Daten aufbereiten mit dplyr
 * `dplyr` ist Teil des `tidyverse`.
 ---
-class:centre, middle 
+class:centre, middle
 ```{r tidyverse, echo=FALSE, out.width = "65%", fig.pos= 'h'}
 knitr::include_graphics("figures/tidyverse.jpg")
 ```
 .footnote[Source: R Memes for Statistical Fiends https://www.reddit.com/r/rstatsmemes/]
 ---
-# Daten aufbereiten mit dplyr 
+# Daten aufbereiten mit dplyr
 * `dplyr` ist Teil des `tidyverse`.
 
-* Basiert auf den Grundprinzipien: 
+* Basiert auf den Grundprinzipien:
   * Komplexe Datenaufbereitung kann in wenige **Grundbausteine** zerteilt werden.
   * **pipes `%>%`** funktionieren als Verknüpfung der Grundbausteine und können übersetzt werden mit "UND DANN" oder "Nehme das resultierende Dataframe aus der vorherigen Funktion und wende das Folgende darauf an".
-  
-* Befehle aus `dyplr` sind für die Arbeit mit Dataframes entwickelt: 
+
+* Befehle aus `dyplr` sind für die Arbeit mit Dataframes entwickelt:
   * Sie erwarten Dataframes und geben Dataframes aus.
   * *Eigentlich sind es es tibbles, eine Art von Dataframe (Mehr Infos: https://r4ds.had.co.nz/tibbles.html)*.
 ---
@@ -220,7 +220,7 @@ Heute verwenden wir Eurostatdaten zu Quoten von Kindern in formaler Betreuung (4
 
 
 Datensatz: *eurostat [educ_uoe_enra10] Pupils aged between 4 years old and the starting age of compulsory education, by sex - as % of the population of the corresponding age group
-http://ec.europa.eu/eurostat/product?code=educ_uoe_enra10&language=en&mode=view*  
+http://ec.europa.eu/eurostat/product?code=educ_uoe_enra10&language=en&mode=view*
 
 ```{r load data 1, include=FALSE}
 # Daten laden
@@ -242,7 +242,7 @@ str(ece_org)
 # Daten aufbereiten mit select()
 
 Mit `str()` sind schon ein paar der nächsten Schritte erkennbar:
-* Es gibt Variablen die wir nicht brauchen wie `SEX` und `UNIT`.  
+* Es gibt Variablen die wir nicht brauchen wie `SEX` und `UNIT`.
 *(Eurostat produziert die 2 Variablen automatisch, hätten wir unterschiedliche Altersklassen ausgewählt oder die Betreuungsquote zB in absoluten Zahlen, bräuchten wir die zwei Variablen.)*
 * Die Betreuungsquoten befinden sich in `Value`, das sollte im Variablennamen auch schnell erkennbar sein.
 * `Value` ist ein character vector.  Die Werte sind eigentlich numerisch.
@@ -276,17 +276,17 @@ unique(ece$GEO)
 # Daten aufbereiten mit filter()
 Wie immer in R gibt es unterschiedliche Schreibweisen die zum gleichen Ergebnis führen.
 ```{r filter 2, echo=TRUE, eval=TRUE}
-ece <- filter(ece, 
-                  GEO != "European Union - 27 countries (from 2020)" & 
+ece <- filter(ece,
+                  GEO != "European Union - 27 countries (from 2020)" &
                   GEO != "European Union - 28 countries (2013-2020)")
 ece <- ece %>%
-  filter(! GEO %in% 
-           c("European Union - 27 countries (from 2020)", 
+  filter(! GEO %in%
+           c("European Union - 27 countries (from 2020)",
              "European Union - 28 countries (2013-2020)"))
 ```
 Zur Erinnerung:
 * `!=` heißt in R ungleich, also nimmt `filter()` alle Zeilen außer die Zeilen, welche die zwei EU-Bezeichnungen beinhalten.
-* `&` ist *und*  `|` ist *oder* 
+* `&` ist *und*  `|` ist *oder*
 * Mit `!` (gesprochen NOT) kann eine logischen Aussage "umgedreht" werden.
 * `%in%`  filtert mit Elementen aus einer Menge `c()`.
 ---
@@ -298,8 +298,8 @@ Der große Vorteil von `%>%` ist, dass man mehrere Funktionen hintereinander set
 * Mit `as.numeric()` überschreiben `ece_o4y` mit einer numerischen Version derselben Variable.
 * Bei der Änderung zu einer numerischen Variable werden alle Werte die keine Zahl sind als `NA` gesetzt (im Original waren fehlende Werte mit `:` definiert).
 * Mit `drop_na()` löschen wir alle Zeilen, also Länder-Jahre, die keinen Wert für die Betreuungsquote haben.
-* Als wir mit `unique()` die Ländernamen angeschaut haben, haben wir gesehen, dass es einen Ländernamen mit Leerzeichen gibt. R arbeitet am besten wenn character-Werte und Objektnamen nur aus Buchstaben, `_` und Zahlen (nicht als erstes Zeichen) bestehen. 
-  
+* Als wir mit `unique()` die Ländernamen angeschaut haben, haben wir gesehen, dass es einen Ländernamen mit Leerzeichen gibt. R arbeitet am besten wenn character-Werte und Objektnamen nur aus Buchstaben, `_` und Zahlen (nicht als erstes Zeichen) bestehen.
+
 
 ---
 # Daten aufbereiten: Variablen manipulieren
@@ -307,12 +307,12 @@ Der große Vorteil von `%>%` ist, dass man mehrere Funktionen hintereinander set
 ece <- ece %>%
   rename(ece_o4y = Value) %>%
   mutate(ece_o4y = as.numeric(ece_o4y)) %>%
-  drop_na(ece_o4y) %>% 
+  drop_na(ece_o4y) %>%
   mutate(GEO = recode(GEO, "Germany (until 1990 former territory of the FRG)" = "Germany"))
 ```
 ---
 # Daten aufbereiten: Daten sortieren & strukturieren
-Für die Datenanalyse ist es egal in welcher Reihenfolge die Zeilen oder Spalten sind. Aber manchmal ist es doch einfacher wenn der Datensatz alphabetisch, absteigend oder aufsteigend angeordnet ist. 
+Für die Datenanalyse ist es egal in welcher Reihenfolge die Zeilen oder Spalten sind. Aber manchmal ist es doch einfacher wenn der Datensatz alphabetisch, absteigend oder aufsteigend angeordnet ist.
 
 `arrange()` kann mit mehreren Variablennamen arbeiten. Es ordnet zuerst nach der ersten Variable und dann nach der zweiten Variable, d.h. alle gleichen Werte der ersten Variable werden nach der zweiten Variable angeordnet. Hier zuerst alphabetisch nach dem Ländernamen `GEO` dann aufsteigend nach der Jahreszahl `TIME`.
 ```{r arrange, echo=TRUE}
@@ -326,17 +326,17 @@ Beim Blick über die Daten gibt es erste Anzeichen, dass nicht alle Länder Date
 * Mit `group_by()` wird der Datensatz je Land gruppiert.
 * Alle folgende Berechnung werden innerhalb der Gruppen angewendet.
 * Mit `summarise()` können unterschiedliche Kennzahlen berechnet werden:
-  * Wird vorher nicht gruppiert wird die Kennzahl für das ganze Datenframe berechnet. 
+  * Wird vorher nicht gruppiert wird die Kennzahl für das ganze Datenframe berechnet.
   * Wird vorher gruppiert wird pro Gruppe die Kennzahl berechnet.
 ---
 # Daten aufbereiten: Gruppieren & Zusammenfassen
 ```{r summarise, echo=TRUE}
 # für welche Jahre haben wie Daten pro Jahr?
-sum_ece <- ece %>% 
+sum_ece <- ece %>%
   group_by(GEO) %>%
-  summarise(min_year = min(TIME), 
-            max_year = max(TIME), 
-            range_year = (max(TIME) - min(TIME)), 
+  summarise(min_year = min(TIME),
+            max_year = max(TIME),
+            range_year = (max(TIME) - min(TIME)),
             n_observations = n()) %>%
   arrange(n_observations) %>%
   ungroup()
@@ -360,12 +360,12 @@ ece <- ece %>%
 ```
 ---
 # tidy Data
-Für Datenanalyse benötigt es tidy data (= aufgeräumte Datensätze): 
+Für Datenanalyse benötigt es tidy data (= aufgeräumte Datensätze):
 * Jede Spalte hat einem Variablennamen und alle Spalten haben die gleiche Länge (rechteckiges Dataframe).
 * Jede Zeile ist eine eine Beobachtung (zB Länder-Jahr) und jede jede Spalte eine Variable.
 * Fehlende Werte sind als missing definiert (NA).
 * Daten sind nicht von Hand kodieren, sondern nachvollziehbar mit R Skripten.
-* Variablennamen sind ohne Sonderzeichen und Leerzeichen  
+* Variablennamen sind ohne Sonderzeichen und Leerzeichen
 NUR ZIFFERN, BUCHSTABEN oder UNTERSTRICHE
 * Variablennamen beginnen nicht mit einer Zahl.
 ---
@@ -385,12 +385,12 @@ Mit tidy Daten können wir als nächstes zB den zeitlichen Verlauf der Betreuung
 plot1 <- ece %>%
   filter(GEO %in% c("Austria", "Germany", "Italy")) %>%
   ggplot(aes(x = TIME, y = ece_o4y)) +
-  geom_line(aes(group = GEO, colour = GEO)) + 
+  geom_line(aes(group = GEO, colour = GEO)) +
   geom_point(aes(colour = GEO)) +
   scale_x_continuous(breaks = unique(ece$TIME)) +
   labs(title = "Kinder (4 Jahren - Schulpflichtalter) in formaler Betreuung",
        y = "formale Betreuungsquote in %",
-       x = "Jahre", 
+       x = "Jahre",
        colour = "Länder")
 ggsave(filename = "plot1.png", path = "output" )
 ```
@@ -420,11 +420,11 @@ knitr::include_graphics("output/plot2.png ")
 ```
 ---
 # Übung 6 (6 ist das neue 5)
-* Laden Sie von moodle den OECD Datensatz "SOCX_AGG_31032020142101957.csv" herunter.  
+* Laden Sie von moodle den OECD Datensatz "SOCX_AGG_31032020142101957.csv" herunter.
 * Bearbeiten Sie den Datensatz, so dass Sie ein tidy dataset bekommen.
 * Berechnen Sie die durchschnittlichen Ausgaben für Familienpolitik in Österreich im Zeitraum 2000 - 2015.
 * Welche fünf Länder haben im Jahr 2010 am meisten für Familienpolitik ausgegeben (in % des BIPs)?
 * Speichern Sie die Ergebnisse als # Kommentar im Skript.
 * Ihr R Skript sollte alle verwendeten Funktionen beinhalten (lassen Sie ihr fertiges R Skript am Ende nochmal komplett durchlaufen. Falls Sie einen Fehler erhalten, beheben Sie diesen).
 
-**Laden Sie Ihr R Skript bis spätestens 22.04. 12:00 auf moodle hoch** 
+**Laden Sie Ihr R Skript bis spätestens 22.04. 12:00 auf moodle hoch**
