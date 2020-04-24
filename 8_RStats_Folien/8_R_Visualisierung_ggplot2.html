@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Datenanalyse mit R - #8 Visualisierung ggplot2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Tobias Wiß, Carmen Walenta   und Felix Wohlgemuth" />
+    <script src="libs/header-attrs-2.1/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: inverse, middle 
+### Datenanalyse mit R
+# # 8 Visualisierungen mit ggplot2
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 23.04.2020
+![logo](figures/gespol_logo.png)
+---
+# Neuer Ablauf des R-Teils ab heute
+Ab heute hat der R-Teil einen neuen Ablauf. Nochmal kurz zusammengefasst:
+
+| Wann?                                                                     | Was passiert?                            |
+| :------------------------------------------------------------------------ | :--------------------------------------- |
+| Freitag Abend (Woche vor der Sprechstunde)                                | neue Folien und Übungsaufgabe auf moodle |
+| Donnerstag 11:00 oder im Anschluss an die zoom-Sitzung zu Familienpolitik | R-Sprechstunde                           |
+| Freitag 12:00 (Tag nach der Sprechstunde)                                 | Abgabe Übungsaufgabe auf moodle          |
+| Freitag 13:00  (Tag nach der Sprechstunde)                                | Lösungsskript wird veröffentlicht        |
+
+Das Lösungsskript für die optionale Übung 7 ist ab Mittwoch 13:00 auf moodle. Ich werde Ihnen auch ein kurzes Feedback über moodle per Kommentar zu Ihrer Abgabe geben. 
+---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
+
+![moodle_forum](figures/forum_moodle.png)
+
+Nutzen Sie auch unsere **R Sprechstunde**.  
+Jeden Donnerstag von 11:00 bis 11:45 auf zoom oder im Anschluss an die zoom-Sitzung zu Familienpolitik (Link finden Sie auf moodle).
+---
+class: inverse, middle, centre
+# Was haben wir letzte Woche gelernt?
+## Deskriptive Statistik: Einzelvariablen
+---
+# summarise()
+`summarise()` ist die Grundfunktion von `dplyr` für die Berechnung von deskriptiven Maßen:
+* `summarise()` fasst eine Variable im Dataframe zu einem oder mehreren Werten zusammen.
+* `summarise()` berechnet Lagemaße und auch Streuungsmaße, wie zB&lt;sup&gt;1&lt;/sup&gt;:
+  * Center: mean(), median()
+  * Spread: sd(), IQR(), mad()
+  * Range: min(), max(), quantile()
+  * Position: first(), last(), nth(),
+  * Count: n(), n_distinct()
+* In `summarise` können Sie auch eigene Maße berechnen, die auf diesen Funktionen basieren (zB die Differenz des Durchschnitts einer Variable und dem Durchschnitt einer zweiten Variable).
+* `summarise()` ist Teil des `dplyr`-Pakets, d.h. es ist kompatibel mit `%&gt;%`, berücksichtigt `group_by` und gibt ein Dataframe aus.
+
+
+.footnote[
+[1] In der Lektüre zur heutigen Sitzung werde die Lagemaße und Streuungsmaße nochmal genau erläutert. Bitte schauen Sie in Sauer: S. 103-112 nach, falls Ihnen die Bedeutungen nicht ganz klar sind.]
+---
+# summarise() - Syntax
+* Das Dataframe mit den Variablen muss festgelegt werden. Entweder am Anfang per `%&gt;%` oder in `summarise()` an erster Stelle.
+* `summarise()` berücksichtigt `group_by()`.
+* Innerhalb von `summarise()`:
+  * Dataframe definieren außer es werden ` %&gt;% ` verwendet.
+  * Namen des Maßes definieren (zB `mean_services =`).
+  * Funktion definieren (zB `mean_services = mean()`).
+  * Variable definieren auf die sich die Funktion bezieht (zB `mean_services = mean(family_service_total_pct_gdp)`).
+* Output ist ein dataframe mit den festgelegten Maßen als Variablen.  Wenn vorher gruppiert wurde, dann sind die Werte der gruppierten Variable die Zeilen im Dataframe (zB Länder).
+---
+# summarise() - Syntax Beispiel
+
+
+```r
+library(tidyverse)
+socx_data &lt;- read_csv("_raw/SOCX_AGG_20042020191205895.csv")
+```
+
+```r
+socx_data %&gt;%
+  filter(YEAR &gt;= 2000 &amp; YEAR &lt;= 2015) %&gt;%
+  group_by(COUNTRY) %&gt;% 
+  summarise(mean_services = mean(family_service_total_pct_gdp),
+            sd_services = sd(family_service_total_pct_gdp))
+```
+
+```
+## # A tibble: 37 x 3
+##    COUNTRY mean_services sd_services
+##    &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt;
+##  1 AUS             0.713      0.108 
+##  2 AUT             0.520      0.114 
+##  3 BEL             0.944      0.0932
+##  4 CAN             0.204      0.0243
+##  5 CHE             0.324      0.0633
+##  6 CHL             0.619      0.188 
+##  7 CZE             0.514      0.0413
+##  8 DEU             0.845      0.157 
+##  9 DNK             2.11       0.112 
+## 10 ESP             0.726      0.0798
+## # ... with 27 more rows
+```
+---
+class: center, middle
+Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstützen Sie Ihre Kolleg*innen mit Ihrem Wissen!  
+
+![moodle_forum](figures/forum_moodle.png)
+
+Nutzen Sie auch unsere **R Sprechstunde**.  
+Jeden Donnerstag von 11:00 bis 11:45 auf zoom (Link finden Sie auf moodle).
+---
+class: inverse, middle, centre
+# Visualisierungen mit ggplot2
+---
+# Visualisieren in R
+Um Daten in R zu visualisieren kann `plot()` aus den Grundfunktionen genutzt werden (mehr Infos unter https://www.statmethods.net/graphs/creating.html).
+
+Wir werden aber das ggplot2 Paket aus der tidyverse Welt nutzen.  
+(Wenn Sie `library(tidyverse)` laden dann wird automatisch ggplot2 geladen).
+
+ggplot2 hat den Vorteil, dass wir innerhalb eines Befehls per `+` eine Ebene nach der anderen auf unsere Plot auftragen können. Mit `plot()` müssten wir mit mehreren Funktionen hintereinander den Grundplot spezifizieren. Mit ggplot2 kann das übersichtlicher gemacht werden. ggplot2 verwendet leider keine `%&gt;%` sondern `+` zwischen den Ebenen.  
+
+*Falls Sie sich fragen was mit ggplot1 passiert ist und warum ggplot2 keine `%&gt;% ` verwendet, dann schauen Sie sich den Vortrag des Entwicklers des tidyverse an https://youtu.be/vYwXMnC03I4?t=112 - Sogar die aktivsten R Entwickler_innen machen einige Fehler.*
+---
+# ggplot2 - Syntax
+Um einen besser Überblick über die unterschiedlichen Bausteine von ggplot2 zu bekommen, öffnen Sie das ggplot2 cheatsheet von RStudio https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf 
+
+&lt;img src="figures/ggplot2_syntax.png" width="80%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Syntax ggplot()
+Um einen Plot zu erstellen ist die erste Zeile immer:
+
+`ggplot(data = &lt;DATAFRAMENAMEN&gt;)`
+
+Hier wird ggplot gesagt in welchem Dataframe sich die Variablen für den Plot befinden und es wird die erste Ebene der Plots erstellt. Da aber noch keine Variablen festgelegt wurden, ist der Plot leer.
+
+
+```r
+library(tidyverse)
+socx_data &lt;- read_csv("_raw/SOCX_AGG_20042020191205895.csv")
+```
+*Ich speichere den Plot in dem Objekt plot1. Wenn Sie das nicht machen, dann wird der Plot in RStudio rechts unten im Viewer angezeigt. Mit Klick auf Zoom wird der Plot in einem neuen Fenster größer angezeigt und mit Export wird der Plot gespeichert.* 
+
+```r
+plot1 &lt;- ggplot(data = socx_data)
+```
+---
+# ggplot2 - Syntax ggplot()
+
+```r
+print(plot1)
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/ggplot 1b-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+Ohne Variablen ist der Plot komplett leer, aber darauf werden die nächsten Ebenen aufgebaut.
+---
+# ggplot2 - Syntax geom_function()
+Eine weitere Ebene wird per `+` nach der vorherigen Zeile hinzugefügt.
+
+`geom_function()` als verpflichtende zweite Zeile steht für alle unterschiedlichen Plottypen, die ggplot2 erstellen kann. 
+Wir erstellen mit `geom_point()` ein Scatterplot der Ausgaben für Familienpolitik je Jahr. Also auf der x-Achse die Jahre und auf der y-Achse die  Ausgaben für Familienpolitik in % BIP. 
+
+Die Variablen werden im `mapping = ` Teil der `geom_function()` spezifiziert. Die x- und y-Achse sind sogenannte aesthetics und müssen innerhalb von `aes()` benannt werden.
+
+```r
+plot1 &lt;- ggplot(data = socx_data) +
+  geom_point(mapping = aes(x = YEAR, y = family_total_total_pct_gdp))
+```
+---
+# ggplot2 - Syntax geom_function()
+
+```r
+plot1
+```
+
+```
+## Warning: Removed 3 rows containing missing values (geom_point).
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_point2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Syntax geom_function()
+Dabei werden automatisch zwei Achsen erstellt. Skalierung und Achsennamen werden auch automatisch erstellt. Alles kann aber nach unserem Wunsch überschrieben werden. Dazu mehr nächste Woche. 
+
+Die Fehlermeldung informiert uns, dass 3 fehlende Werte nicht angezeigt werden. D.h. uns fehlende drei Länder-Jahre im Plot. Wir hätten vorher den Datensatz mit `drop_na()` bereinigen können.
+
+Da `ggplot` Teil des `tidyverse` ist können wir den Datensatz per `%&gt;%` festlegen und vorher Änderungen durchführen (`drop_na()` aber auch `filter()`). Dann müssen wir `data = ` nicht mehr festlegen.
+
+```r
+plot1 &lt;- socx_data %&gt;%
+    drop_na(family_total_total_pct_gdp) %&gt;%
+  ggplot() +
+    geom_point(mapping = aes(x = YEAR, y = family_total_total_pct_gdp))
+```
+---
+# ggplot2 - Syntax geom_function()
+
+```r
+plot1
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_point3 a-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Syntax aesthetics
+Was sehen wir jetzt auf dem Plot? 
+
+Die jährlichen Ausgaben für Familienpolitik im Sample. Jeder Punkt ist ein Land, aber die Veränderung innerhalb eines Landes über die Jahre kann man nicht erkennen. 
+
+Eine Möglichkeit ist die Farbe des Punktes je Land einzufärben. Das kann innerhalb von `aes()` mit `colour = ` oder `color = ` gemacht werden. Wir fügen damit eine dritte Variable zum Scatterplot hinzu. Die Legende mit allen Ländern und den zugehörigen Farben wird automatisch erstellt.
+
+```r
+plot2 &lt;- socx_data %&gt;%
+    drop_na(family_total_total_pct_gdp) %&gt;%
+  ggplot() +
+    geom_point(mapping = aes(x = YEAR, 
+                           y = family_total_total_pct_gdp,
+                           colour = COUNTRY))
+```
+---
+# ggplot2 - Syntax aesthetics
+
+```r
+plot2
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_point 5-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Syntax aesthetics
+Besser? Man erkennt jetzt vielleicht etwas mehr, aber so richtig übersichtlich ist es noch nicht. 
+
+Wir können eine neue Ebene mit `geom_line()` hinzufügen und damit die jährlichen Ausgaben pro Land verbinden. Anstelle die `aes()` in den `geom_functions` festzulegen, kann das auch gleich in der 1.Zeile in `ggplot()` gemacht werden. Das ist jetzt die Grundeinstellung für alle `geom_functions`. Wird in einer `geom_function` aber doch `aes()` spezifiziert, wird nur für diese Zeile die Grundeinstellung überschrieben.
+
+```r
+plot3 &lt;- socx_data %&gt;%
+    drop_na(family_total_total_pct_gdp) %&gt;%
+  ggplot(aes(x = YEAR, y = family_total_total_pct_gdp)) +
+    geom_point() +
+    geom_line(aes(colour = COUNTRY))
+```
+*Wie alle Befehle in R erkennt `ggplot2` Einstellungen auch anhand der Position. `mapping = ` muss nicht unbedingt ausgeschrieben werden. Nach der Angabe des Datensatzes kommt immer `mapping = `. Es reicht also wenn Sie `aes()` angeben.*
+---
+# ggplot2 - Syntax aesthetics
+
+```r
+plot3
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_line 2-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Syntax aesthetics
+Es gibt noch weitere aesthetics wie `size = `, `shape = ` und `alpha = `. Probieren Sie die unterschiedlichen aesthetics einfach mal aus. Sie müssen dafür im Befehl einfach colour ersetzen.
+
+So richtig übersichtlich ist der Plot noch nicht, am besten wählen wir ein paar Länder und den OECD Durchschnitt aus. Wenn wir `colour = ` in den `aes()` von `ggplot()` definieren, passt die Farbe der Punkte und der Linien zu den Ländern. 
+
+```r
+plot4 &lt;- socx_data %&gt;%
+    filter(COUNTRY %in% c("AUT", "GBR", "HUN", "OECD", "FRA")) %&gt;%
+    filter(YEAR &gt;= 2000 &amp; YEAR &lt;= 2015) %&gt;%
+  ggplot(aes(x = YEAR, y = family_total_total_pct_gdp, colour = COUNTRY)) +
+    geom_point() +
+    geom_line()
+```
+---
+# ggplot2 - Syntax aesthetics
+
+```r
+plot4
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_line 4-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Einzelvariablen visualisieren
+Letzte Woche haben wir deskriptive Maße für Einzelvariablen berechnet. Mit `ggplot2` können wir auch Einzelvariablen darstellen.  Wir haben zum Beispiel berechnet, wie die Ausgaben für Barleistungen und Sachleistungen im Verhältnis zu den gesamten Ausgaben für Familienpolitik pro Land stehen. 
+
+```r
+socx_data &lt;- socx_data %&gt;%
+  filter(COUNTRY != "OECD") %&gt;%
+  filter(YEAR &gt;= 2000 &amp; YEAR &lt;= 2015) %&gt;%
+  mutate(cash_prop = (family_cash_total_pct_gdp / family_total_total_pct_gdp) * 100) %&gt;%
+  mutate(services_prop = (family_service_total_pct_gdp / family_total_total_pct_gdp) * 100)
+```
+---
+# ggplot2 - Einzelvariablen visualisieren
+In allen `geom_function` Funktionen kann das Aussehen der Visualisierung verändert werden. Das geschieht außerhalb von `aes()`!! Die Linienfarbe wird per `colour = `, die Füllfarbe mit `fill = ` und die Transparenz mit `alpha = ` definiert.
+
+```r
+plot5 &lt;- socx_data %&gt;%
+  ggplot() +
+  geom_density(aes(x = cash_prop), colour = "red", fill = "red", alpha = 0.1) +
+  labs(x = "red = cash_prop")
+```
+---
+# ggplot2 - Einzelvariablen visualisieren
+
+```r
+plot5
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_density 4-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Einzelvariablen visualisieren
+Da ggplot mit Ebenen arbeitet, können wir über den density plot von `cash_prop` den density plot von `services_prop` legen. Wichtig ist dass beide Variablen erkannt werden. Die Lösung mit der Benennung der x-Achse ist noch nicht elegant, aber funktionier für den Moment. Nächste Woche finden wir eine elegantere Lösung.
+
+```r
+plot6 &lt;- socx_data %&gt;%
+  ggplot() +
+  geom_density(aes(x = cash_prop), colour = "red", fill = "red", alpha = 0.1) +
+  geom_density(aes(x = services_prop), colour = "blue", fill = "blue", alpha = 0.1) +
+  labs(x = "blue = services_prop  |  red = cash_prop")
+```
+---
+# ggplot2 - Einzelvariablen visualisieren
+
+```r
+plot6
+```
+
+&lt;img src="8_R_Visualisierung_ggplot2_files/figure-html/geom_density 5-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+---
+# ggplot2 - Einzelvariablen visualisieren
+Der Vergleich bestätigt unsere Analyse der Streuungsmaße der letzten Woche. Generell haben die OECD Länder zwischen 2000 und 2015 prozentual mehr für Barleistungen als für Sachleistungen ausgegeben. 
+
+**Nächste Woche werden wir uns tiefer mit der Visualisierung von Einzelvariablen in Boxplots und Histogrammen beschäftigen.**
+---
+# Übung 8
+* Verwenden Sie wieder den SOCX_AGG_20042020191205895.csv Datensatz. Sie finden ihn auf moodle.
+
+* Erstellen Sie ein scatterplot mit einer Variable Ihrer Wahl auf der y-Achse und den Jahren auf der x-Achse.
+
+* Wählen Sie 4 Länder aus und erweitern Sie den scatterplot mit einer Gruppierung der Länder per `shape = `.
+
+* Probieren Sie eine andere `geom_function` vom cheatsheet aus (Beispiele finden Sie auf: https://www.r-graph-gallery.com/)
+
+* Bitte laden Sie Ihr Skript bis zum 01.05. 12:00 auf moodle hoch.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
