@@ -1,8 +1,8 @@
 ---
 title: "Datenanalyse mit R - #8 Visualisierung ggplot2"
-author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
+author: "Tobias Wiß, Carmen Walenta und Felix Wohlgemuth"
 institute: "gespol, JKU"
-date: "02.04.2020"
+date: "24.04.2020"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -18,7 +18,7 @@ class: inverse, middle
 ### Datenanalyse mit R
 # # 8 Visualisierungen mit ggplot2
 ### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
-### 23.04.2020
+### 24.04.2020
 ![logo](figures/gespol_logo.png)
 ---
 # Neuer Ablauf des R-Teils ab heute
@@ -160,11 +160,11 @@ plot1
 ```
 ---
 # ggplot2 - Syntax geom_function()
-Dabei werden automatisch zwei Achsen erstellt. Skalierung und Achsennamen werden auch automatisch erstellt. Alles kann aber nach unserem Wunsch überschrieben werden. Dazu mehr nächste Woche. 
+Dabei werden automatisch zwei Achsen erstellt. Skalierung und Achsennamen werden auch automatisch festgelegt. Alles kann aber nach unserem Wunsch überschrieben werden. Dazu mehr nächste Woche. 
 
-Die Fehlermeldung informiert uns, dass 3 fehlende Werte nicht angezeigt werden. D.h. uns fehlende drei Länder-Jahre im Plot. Wir hätten vorher den Datensatz mit `drop_na()` bereinigen können.
+Die Fehlermeldung informiert uns, dass 3 fehlende Werte nicht angezeigt werden. D.h. uns fehlen drei Länder-Jahre im Plot. Wir hätten vorher den Datensatz mit `drop_na()` bereinigen können.
 
-Da `ggplot` Teil des `tidyverse` ist können wir den Datensatz per `%>%` festlegen und vorher Änderungen durchführen (`drop_na()` aber auch `filter()`). Dann müssen wir `data = ` nicht mehr festlegen.
+Da `ggplot` Teil des `tidyverse` ist, können wir den Datensatz per `%>%` festlegen und vorher Änderungen durchführen (`drop_na()` aber auch `filter()`). Dann müssen wir `data = ` nicht mehr festlegen.
 ```{r geom_point 3}
 plot1 <- socx_data %>%
     drop_na(family_total_total_pct_gdp) %>%
@@ -180,7 +180,7 @@ plot1
 # ggplot2 - Syntax aesthetics
 Was sehen wir jetzt auf dem Plot? 
 
-Die jährlichen Ausgaben für Familienpolitik im Sample. Jeder Punkt ist ein Land, aber die Veränderung innerhalb eines Landes über die Jahre kann man nicht erkennen. 
+Die jährlichen Ausgaben für Familienpolitik im Sample. Jeder Punkt ist ein Land-Jahr, aber die Veränderung innerhalb eines Landes über die Jahre kann nicht erkannt werden. 
 
 Eine Möglichkeit ist die Farbe des Punktes je Land einzufärben. Das kann innerhalb von `aes()` mit `colour = ` oder `color = ` gemacht werden. Wir fügen damit eine dritte Variable zum Scatterplot hinzu. Die Legende mit allen Ländern und den zugehörigen Farben wird automatisch erstellt.
 ```{r geom_point 4}
@@ -200,7 +200,7 @@ plot2
 # ggplot2 - Syntax aesthetics
 Besser? Man erkennt jetzt vielleicht etwas mehr, aber so richtig übersichtlich ist es noch nicht. 
 
-Wir können eine neue Ebene mit `geom_line()` hinzufügen und damit die jährlichen Ausgaben pro Land verbinden. Anstelle die `aes()` in den `geom_functions` festzulegen, kann das auch gleich in der 1.Zeile in `ggplot()` gemacht werden. Das ist jetzt die Grundeinstellung für alle `geom_functions`. Wird in einer `geom_function` aber doch `aes()` spezifiziert, wird nur für diese Zeile die Grundeinstellung überschrieben.
+Wir können eine neue Ebene mit `geom_line()` hinzufügen und damit die jährlichen Ausgaben pro Land verbinden. Anstelle die `aes()` in den `geom_functions` festzulegen, kann das auch gleich in der 1.Zeile in `ggplot()` gemacht werden. Das ist jetzt die Grundeinstellung für alle folgende `geom_functions`. Wird in einer `geom_function` aber doch `aes()` spezifiziert, wird nur für diese Zeile die Grundeinstellung überschrieben.
 ```{r geom_line 1}
 plot3 <- socx_data %>%
     drop_na(family_total_total_pct_gdp) %>%
@@ -208,7 +208,7 @@ plot3 <- socx_data %>%
     geom_point() +
     geom_line(aes(colour = COUNTRY))
 ```
-*Wie alle Befehle in R erkennt `ggplot2` Einstellungen auch anhand der Position. `mapping = ` muss nicht unbedingt ausgeschrieben werden. Nach der Angabe des Datensatzes kommt immer `mapping = `. Es reicht also wenn Sie `aes()` angeben.*
+*R erkennt Einstellungen auch anhand der Position. `mapping = ` muss nicht unbedingt ausgeschrieben werden. Nach der Angabe des Datensatzes kommt immer `mapping = `. Es reicht also wenn Sie `aes()` angeben.*
 ---
 # ggplot2 - Syntax aesthetics
 ```{r geom_line 2, out.width = "60%", fig.align='center'}
@@ -234,7 +234,9 @@ plot4
 ```
 ---
 # ggplot2 - Einzelvariablen visualisieren
-Letzte Woche haben wir deskriptive Maße für Einzelvariablen berechnet. Mit `ggplot2` können wir auch Einzelvariablen darstellen.  Wir haben zum Beispiel berechnet, wie die Ausgaben für Barleistungen und Sachleistungen im Verhältnis zu den gesamten Ausgaben für Familienpolitik pro Land stehen. 
+Letzte Woche haben wir deskriptive Maße für Einzelvariablen berechnet. Mit `ggplot2` können wir auch die Verteilung von Einzelvariablen darstellen.
+
+Letzte Woche haben wir zum Beispiel berechnet, wie die Ausgaben für Barleistungen und Sachleistungen im Verhältnis zu den gesamten Ausgaben für Familienpolitik pro Land stehen. 
 ```{r relat decriptive}
 socx_data <- socx_data %>%
   filter(COUNTRY != "OECD") %>%
@@ -244,13 +246,18 @@ socx_data <- socx_data %>%
 ```
 ---
 # ggplot2 - Einzelvariablen visualisieren
-In allen `geom_function` Funktionen kann das Aussehen der Visualisierung verändert werden. Das geschieht außerhalb von `aes()`!! Die Linienfarbe wird per `colour = `, die Füllfarbe mit `fill = ` und die Transparenz mit `alpha = ` definiert.
+In allen `geom_functions` kann das Aussehen der Visualisierung verändert werden. 
+
+Das geschieht außerhalb von `aes()`!! 
+
+Die Linienfarbe wird mit `colour = `, die Füllfarbe mit `fill = ` und die Transparenz mit `alpha = ` definiert.
 ```{r density 1}
 plot5 <- socx_data %>%
   ggplot() +
   geom_density(aes(x = cash_prop), colour = "red", fill = "red", alpha = 0.1) +
   labs(x = "red = cash_prop")
 ```
+Mit `labs()` können die Achsennamen festgelegt werden. Aber auch der Titel und Untertitel.
 ---
 # ggplot2 - Einzelvariablen visualisieren
 ```{r geom_density 4, out.width = "60%", fig.align='center'}
@@ -258,7 +265,11 @@ plot5
 ```
 ---
 # ggplot2 - Einzelvariablen visualisieren
-Da ggplot mit Ebenen arbeitet, können wir über den density plot von `cash_prop` den density plot von `services_prop` legen. Wichtig ist dass beide Variablen erkannt werden. Die Lösung mit der Benennung der x-Achse ist noch nicht elegant, aber funktionier für den Moment. Nächste Woche finden wir eine elegantere Lösung.
+Da ggplot mit Ebenen arbeitet, können wir über den density plot von `cash_prop` den density plot von `services_prop` legen. 
+
+Wichtig ist dass beide Variablen erkannt werden. 
+
+Die Lösung mit der Benennung der x-Achse in `labs()` ist noch nicht elegant, aber funktionier für den Moment. Nächste Woche finden wir eine elegantere Lösung.
 ```{r density 2}
 plot6 <- socx_data %>%
   ggplot() +
@@ -273,7 +284,7 @@ plot6
 ```
 ---
 # ggplot2 - Einzelvariablen visualisieren
-Der Vergleich bestätigt unsere Analyse der Streuungsmaße der letzten Woche. Generell haben die OECD Länder zwischen 2000 und 2015 prozentual mehr für Barleistungen als für Sachleistungen ausgegeben. 
+Der Vergleich bestätigt unsere Analyse der Streuungsmaße letzte Woche. Generell haben die OECD Länder zwischen 2000 und 2015 prozentual mehr für Barleistungen als für Sachleistungen ausgegeben. 
 
 **Nächste Woche werden wir uns tiefer mit der Visualisierung von Einzelvariablen in Boxplots und Histogrammen beschäftigen.**
 ---
