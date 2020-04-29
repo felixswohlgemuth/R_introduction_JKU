@@ -56,14 +56,14 @@ socx_data %>%
 
 ### task 3 ####
 # Probieren Sie eine andere geom_function vom cheatsheet aus (Beispiele finden Sie auf: https://www.r-graph-gallery.com/)
-# Boxlot f?r alle L?nder und gesamten Zeitraum 2000 - 2015
+# Boxlot fuer alle Laender und gesamten Zeitraum 2000 - 2015
 socx_data %>% 
   ggplot(aes(x = COUNTRY, y = family_service_childcare_pct_gdp)) +
   geom_boxplot()
 
 # Laendernamen sind nicht lesbar mit theme(axis.text.x = element_text()) kann der Text der x-Achse bearbeitet werden
 # angle = mit welchen Winkel der Text angezeigt wird und vjust = oder hjust = dass der Text in der Mitte des Striches steht
-# mehr Infos unter https://www.gl-li.com/2017/08/18/place-text-at-right-location/
+# mehr Infos unter https://rstudio-pubs-static.s3.amazonaws.com/3364_d1a578f521174152b46b19d0c83cbe7e.html
 
 socx_data %>% 
   ggplot(aes(x = COUNTRY, y = family_service_childcare_pct_gdp)) +
