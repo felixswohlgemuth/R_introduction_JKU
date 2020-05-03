@@ -366,7 +366,6 @@ wvs_data %>%
 
 Fehlermeldung bedeutet, dass 11 Beobachtungen entfernt wurden, weil sie fehlende Werte haben. 
 ---
-# Balkendiagram geom_bar
 ```{r geom_bar2, echo=FALSE}
 wvs_data %>%
   filter(S003 == "DEU") %>% 
@@ -493,7 +492,8 @@ wvs_data_scale %>%
   facet_grid(cols = vars(S003), 
              rows =vars(X001))
 ```
-*Schauen Sie im Codebook nach wie 1 und 2 definiert für `X001` definiert ist.* 
+
+*Schauen Sie im Codebook nach wie 1 und 2 für `X001` definiert sind* 
 ---
 # Plots speichern ggsave()
 Plots könne direkt im Vorschaufenster gespeichert werden. Einfach auf *Export* > *Save as image* klicken. Im neuen Fenster können Sie die Größe der Grafik, Dateinamen und Speicherort angeben.
