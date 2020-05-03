@@ -110,7 +110,7 @@ ggplot2 hat den Vorteil, dass wir innerhalb eines Befehls per `+` eine Ebene nac
 *Falls Sie sich fragen was mit ggplot1 passiert ist und warum ggplot2 keine `%>% ` verwendet, dann schauen Sie sich den Vortrag des Entwicklers des tidyverse an https://youtu.be/vYwXMnC03I4?t=112 - Sogar die aktivsten R Entwickler_innen machen einige Fehler.*
 ---
 # ggplot2 - Syntax
-Um einen besser Überblick über die unterschiedlichen Bausteine von ggplot2 zu bekommen, öffnen Sie das ggplot2 cheatsheet von RStudio https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf 
+Um einen besser Überblick über die unterschiedlichen Bausteine von ggplot2 zu bekommen, öffnen Sie das ggplot2 cheatsheet https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf 
 
 ```{r ggplot2 syntax, echo=FALSE, out.width = "80%", fig.align='center'}
 knitr::include_graphics("figures/ggplot2_syntax.png")
@@ -166,7 +166,7 @@ Die Fehlermeldung informiert uns, dass 3 fehlende Werte nicht angezeigt werden. 
 
 Da `ggplot` Teil des `tidyverse` ist, können wir den Datensatz per `%>%` festlegen und vorher Änderungen durchführen (`drop_na()` aber auch `filter()`). Dann müssen wir `data = ` nicht mehr festlegen.
 ```{r geom_point 3}
-plot1 <- socx_data %>%
+socx_data %>%
     drop_na(family_total_total_pct_gdp) %>%
   ggplot() +
     geom_point(mapping = aes(x = YEAR, y = family_total_total_pct_gdp))

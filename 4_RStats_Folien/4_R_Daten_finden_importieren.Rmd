@@ -1,6 +1,5 @@
 ---
-title: "Datenanalyse mit R"
-subtitle: "#4 Daten finden und importieren"
+title: "Datenanalyse mit R - #4 Daten finden und importieren"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "26.03.2020"

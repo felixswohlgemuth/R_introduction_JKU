@@ -1,6 +1,5 @@
 ---
-title: "Datenanalyse mit R"
-subtitle: "#2 erste Schritte mit RStudio"
+title: "Datenanalyse mit R - #2 erste Schritte mit RStudio"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "12.03.2020"

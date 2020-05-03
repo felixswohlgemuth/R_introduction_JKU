@@ -1,6 +1,5 @@
 ---
-title: "Datenanalyse mit R"
-subtitle: "#3 Daten und Datentypen"
+title: "Datenanalyse mit R - #3 Daten und Datentypen"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "19.03.2020"

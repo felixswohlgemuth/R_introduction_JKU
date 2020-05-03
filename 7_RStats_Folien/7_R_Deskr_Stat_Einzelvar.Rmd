@@ -1,6 +1,5 @@
 ---
-title: "Datenanalyse mit R"
-subtitle: "#7 Daten aufbereiten"
+title: "Datenanalyse mit R - #7 Daten aufbereiten"
 author: "Tobias Wiß, Carmen Walenta <br> und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "02.04.2020"

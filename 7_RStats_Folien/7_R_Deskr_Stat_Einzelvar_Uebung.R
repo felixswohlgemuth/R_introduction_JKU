@@ -27,10 +27,10 @@ socx_data <- socx_data %>% # overwrite dataframe
 
 ### task 1 ####
 ## Wählen Sie eine Variable Ihrer Wahl.
-## Filtern Sie den Datensatz, so dass die Variable nur für ein Jahr Ihrer Wahl ausgegeben wird.
+## Filtern Sie den Datensatz, so dass die Variable nur fuer ein Jahr Ihrer Wahl ausgegeben wird.
 ## expenditure for childcare in 2007
 
-## Berechnen Sie ein passendes Lagemaß und ein passendes Streuungsmaß für dieses Jahr.
+## Berechnen Sie ein passendes Lagemass und ein passendes Streuungsmass fuer dieses Jahr.
 ## min(), max(), mean(), sd()
 
 childcare_07_descr <- socx_data %>% # save summarise output in new dataframe
@@ -44,7 +44,7 @@ childcare_07_descr <- socx_data %>% # save summarise output in new dataframe
 ### task 2 ####
 ## Verwenden Sie `group_by` und einen Zeitraum Ihrer Wahl
 # 2000 - 2007
-## Berechnen Sie für den Zeitraum ein Lagemaß und ein Streuungsmaß für jedes Land getrennt.
+## Berechnen Sie fuer den Zeitraum ein Lagemass und ein Streuungsmas fuer jedes Land getrennt.
 
 childcare_00_07_descr <- socx_data %>%  # save summarise output in new dataframe
   filter(YEAR >= 2000 & YEAR <= 2007) %>%   # keep observations between 2000 & 2007
