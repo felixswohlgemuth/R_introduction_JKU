@@ -8,65 +8,74 @@
 library(tidyverse) # Load the 'Tidyverse' including ggplot2
 
 ### load dataset ####
-socx_data <- read_csv(file.choose()) # import dataframe with file.choose()
-
-### clean dataset ###
-socx_data <- socx_data %>%
-  filter(COUNTRY != "OECD") %>% # remove rows with OECD mean
-  filter(YEAR <= 2015) # keep all observations between 2000 & 2015
-
+wvs_data <- readRDS(file.choose()) # import dataframe with file.choose()
 
 ### task 1 ####
-# Erstellen Sie ein scatterplot mit einer Variable Ihrer Wahl auf der y-Achse und den Jahren auf der x-Achse
-# Ausgaben fuer formale Kinderbetreuung
+# Erstellen Sie ein Boxplot für eine Variable Ihrer Wahl, entweder für Deutschland oder Schweden.
+wvs_data %>%
+  filter(S003 == "DEU") %>% # filter DEU
+  ggplot(aes(y = D057)) + # define y-axis variable & data
+  geom_boxplot() + # set boxplot as geom_function
+  labs(title = "Eine Hausfrau zu sein ist genauso erfüllend wie eine bezahlte Arbeit",
+       subtitle = "1 = Stimme voll und ganz zu <-> 4 = Stimme überhaupt nicht zu\nDeutschland Welle 6 2013",
+       y = "")  # set labels
 
-ggplot(data = socx_data, aes(x = YEAR, y = family_service_childcare_pct_gdp)) + # specify variables in ggplot()
-  geom_point()
 
-ggplot(data = socx_data) + 
-  geom_point(aes(x = YEAR, y = family_service_childcare_pct_gdp)) # or specify variables in geom_function()
+# Visualisierung speichern
+ggsave("boxplot_hausfrau_de.png", path = "figures", height = 6.5, width = 6.5)
 
-# Ausgaben fuer Kinderbetreuung im Zeitraum 2000 - 2010 
+# Macht ein Boxplot für eine ordinal skalierte Variable Sinn?
+# Wir sehen, dass das 50%- und das 75%-Quartil gleich 3 "stimme nicht zu" ist
+# und dass das 25%-Quartil gleich "stimme zu" ist
+# Ein Säulendiagramm mit der Anzahl der Ausprägungen pro Item mach mehr Sinn
 
-socx_data %>% 
-  filter(YEAR >= 2000 & YEAR <= 2010) %>% # filter years for following functions
-  ggplot() + # dataset specified with %>%  in line before
-  geom_point(aes(x = YEAR, y = family_service_childcare_pct_gdp))
+wvs_data %>%
+  filter(S003 == "DEU") %>% # filter DEU
+  ggplot(aes(x = D057)) + # define x-axis variable & data
+  geom_bar() + # set barplot as geom_function
+  labs(title = "Eine Hausfrau zu sein ist genauso erfüllend wie eine bezahlte Arbeit",
+       subtitle = "1 = Stimme voll und ganz zu <-> 4 = Stimme überhaupt nicht zu\nDeutschland Welle 6 2013",
+       y = "Anzahl", x= "")  # set labels
 
-# X-Achse zeigt Halbjahre fuer die wir keine Daten haben - geschieht da YEAR als numerische Variable definiert ist
-# mit scale_x_continuous werden Anfang und Ende der Skala und die angezeigten Schritte angezeigt
-
-socx_data %>% 
-  filter(YEAR >= 2000 & YEAR <= 2010) %>% # filter years for following functions
-  ggplot() + # dataset specified with %>%  in line before
-  geom_point(aes(x = YEAR, y = family_service_childcare_pct_gdp)) +
-  scale_x_continuous(limits = c(2000, 2010), breaks = c(2000, 2005, 2010)) # limits = start & end; breaks = shown years on scale
+# Visualisierung speichern
+ggsave("bar_hausfrau_de.png", path = "figures", height = 6.5, width = 6.5)
 
 
 ### task 2 ####
-# Waehlen Sie 4 Laender aus und erweitern Sie den scatterplot mit einer Gruppierung der Laender per shape = 
-# Oesterreich, USA, Finnland, Litauen
-socx_data %>% 
-  filter(COUNTRY %in% c("AUT", "USA", "FIN", "LTU" )) %>% 
-  filter(YEAR >= 2000 & YEAR <= 2010) %>%
-  ggplot() +
-  geom_point(aes(x = YEAR, y = family_service_childcare_pct_gdp, shape = COUNTRY)) + # shape = in aes()
-  scale_x_continuous(limits = c(2000, 2010), breaks = c(2000, 2005, 2010)) # limits = start & end; breaks = shown years on scale
+# Erstellen Sie Boxplots für Schweden und Deutschland und Männer und Frauen in einer Grafik mit `facet_grid()`.
 
+# Für die bessere Übersichtlichkeit benennen wir die Ausprägung von X001 in Mann und Frau um
+wvs_data <- wvs_data %>% 
+  mutate(X001 = as.character(X001)) %>% 
+  mutate(X001 = recode(X001, "1" = "Mann", "2" = "Frau"))
 
-### task 3 ####
-# Probieren Sie eine andere geom_function vom cheatsheet aus (Beispiele finden Sie auf: https://www.r-graph-gallery.com/)
-# Boxlot fuer alle Laender und gesamten Zeitraum 2000 - 2015
-socx_data %>% 
-  ggplot(aes(x = COUNTRY, y = family_service_childcare_pct_gdp)) +
-  geom_boxplot()
+wvs_data %>%
+  ggplot(aes(y = D057)) + # define y-axis variable & data
+  geom_boxplot() + # set boxplot  as geom_function
+  facet_grid( 
+    cols = vars(S003), 
+    rows = vars(X001)) + # set facet variables
+  labs(title = "Eine Hausfrau zu sein ist genauso erfüllend wie eine bezahlte Arbeit",
+       subtitle = "1 = Stimme voll und ganz zu <-> 4 = Stimme überhaupt nicht zu\nDeutschland & Schweden Welle 6 2013, getrennt nach Geschlecht",
+       y = "")  # set labels
 
-# Laendernamen sind nicht lesbar mit theme(axis.text.x = element_text()) kann der Text der x-Achse bearbeitet werden
-# angle = mit welchen Winkel der Text angezeigt wird und vjust = oder hjust = dass der Text in der Mitte des Striches steht
-# mehr Infos unter https://rstudio-pubs-static.s3.amazonaws.com/3364_d1a578f521174152b46b19d0c83cbe7e.html
+# Visualisierung speichern
+ggsave("boxplot_hausfrau_de_se_gender.png", path = "figures", height = 6.5, width = 6.5)
 
-socx_data %>% 
-  ggplot(aes(x = COUNTRY, y = family_service_childcare_pct_gdp)) +
-  geom_boxplot() +
-  theme(axis.text.x=element_text(angle = 90, vjust = 0.5)) # angle = 90 Rotation des Textes um 90? und vjust = 0.5 Text nach links verschieben
+# Auch hier zeigt sich dass ein Boxplot für die ordinal skalierte Variablen nicht geeignet ist
+# Die gleiche Darstellung mit Säulendiagrammen
+
+wvs_data %>%
+  ggplot(aes(x = D057)) + # define x-axis variable & data
+  geom_bar() + # set boxplot  as geom_function
+  facet_grid( 
+    cols = vars(S003), 
+    rows = vars(X001)) + # set facet variables
+  labs(title = "Eine Hausfrau zu sein ist genauso erfüllend wie eine bezahlte Arbeit",
+       subtitle = "1 = Stimme voll und ganz zu <-> 4 = Stimme überhaupt nicht zu\nDeutschland 2013 & Schweden 2011 Welle 6, getrennt nach Geschlecht",
+       y = "Anzahl", x = "")  # set labels
+
+# Visualisierung speichern
+ggsave("bar_hausfrau_de_se_gender.png", path = "figures", height = 6.5, width = 6.5)
+
 
