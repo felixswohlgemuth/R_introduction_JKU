@@ -312,7 +312,7 @@ Für unsere Einheit hab ich folgende Variablen ausgewählt:
 * `X047`: Scale of incomes
 * `C001`: Jobs scarce: Men should have more right to a job than women 
 * `D057`: Being a housewife just as fulfilling
-* `D063`: Job best way for women to be independent(b)
+* `D063_B`: Job best way for women to be independent(b)
 ---
 # WVS Datensatz reduzieren
 * Für die Datenmanipulation und die Visualisierung benötigen wir Pakete aus dem tidyverse.
@@ -376,28 +376,31 @@ wvs_data %>%
 # Index erstellen
 Für die Verwendung eines Histogramms benötigen wir eine kontinuierliche numerische Variable. Leider gibt es im WVS nur wenige numerische Variablen, da die meisten Surveyfragen mit einer Likert-Skala oder einer Nominal-Skala beantwortet werden. 
 
-Daher bilden wir einen Index aus den unterschiedlichen Variablen zur Einstellung bezüglich der Erwerbsarbeit von Frauen. 
-* Vor der Bildung des Indexes standardisieren wir die Teilvariablen mit `scale()`. 
-* Die neuen Werte sind die Abweichung vom Mittelwert relativ zur Standardabweichung. Der Mittelwert der transformierten Variablen ist nun 0 und die Standardabweichnung 1.
-* Die Bildung des Index ist simple: Wir addieren die einzelnen Teilvariablen und ziehen die Werte von `D063_B` ab, da die Antworten nicht in die gleiche Aussagerichtung gehen. 
+Daher bilden wir einen Index aus den unterschiedlichen Variablen zur Einstellung bezüglich der Erwerbsarbeit von Frauen (Erklärung & Code auf den nächsten zwei Seiten). 
 
-Umso negativer der Wert des Indexes umso mehr stimmen die Leute zu, dass Frauen Hausfrauen sein sollen, Männer auf dem Arbeitsmarkt einen Vorzug haben sollen und dass ein Beruf die Unabhängigkeit von Frauen **nicht** fördert (Variablenwerte umgedreht für `D063_B`, weil wir sie abziehen von den anderen).
+*Die Erstellung eines Indexes mit `scale()` und die dazugehörigen Plots finden Sie am Ende der Präsentation*
+---
+Vor der Bildung des Indexes passen wir die Werte so an, dass die Spannweite jeder Variable 0-1 ist. Dafür müssen wie die Variablen manipulieren: 
+
+1. Bei `C001` ist die Reihenfolge der Antwortitems: `agree`, `disagree` und `neither`, wohingegen ist bei `D063_B` die Reihenfolge `agree`, `neither` und `disagree`. Haben beide `neither` die gleiche Bedeutung? Man könnte entwededer die Reihenfolge bei `C001` ändern, so dass `neither` Platz 2 hat. Oder wir definieren `neither` als `NA`, da es nicht die gleiche Bedeutung wie bei `D063_B` hat. Per `replace_with_na(replace = list(C001 = 3))` definieren wir `neither` als `NA`.
+2. Substrahieren wir `1` von jeder Variable, so dass die Spannweite 0 bis höchstes Antwortitem minus 1 ist.
+3. Dividieren wir jede Variable durch die Zahl des höchsten theoretischen Antwortitems minus 1 (1 bei `C001`, 3 bei `D507` und 2 bei `D063_B`). Somit haben wir die Spannweite 0 bis 1 bei jeder Variable.
+4. Die Aussagerichtung von `C001` und `D507` ist je höher der Wert, desto negativer ist die Einstellung bezüglich der Erwerbsarbeit von Frauen. Deshalb müssen wir die Antworten umdrehen, so dass eine höhere Antwort eine positivere Einstellung zur Erwerbsarbeit von Frauen darstellt. Das machen wir per Substraktion von `1` und Multiplikation mit `-1`.
+
+Um den Index zu erstellen, addieren wir alle Werte und teilen sie durch die Anzahl der Indexteilvariablen (hier `3`).
 ---
 # Index erstellen
+Umso positver der Wert des Indexes, umso stärker ist die Zustimmung, dass Hausfrauen-sein *nicht* erfüllend ist, dass Männer auf dem Arbeitsmarkt *nicht* bevorzugt werden sollen und dass ein Beruf die Unabhängigkeit von Frauen fördert.
 ```{r index}
 wvs_data_scale <- wvs_data %>% 
-  # index creation for each country separately 
-  group_by(S003) %>% 
   # answer "neither" transformed to NA
   replace_with_na(replace = list(C001 = 3)) %>% 
   # standardise each variable
-  mutate(C001 = scale(C001)) %>% 
-  mutate(D057 = scale(D057)) %>% 
-  mutate(D063_B = scale(D063_B)) %>%
-  # ungrouping probably not necessary
-  ungroup() %>% 
+  mutate(C001 = (((C001 - 1) / 1) - 1) * -1 ) %>% 
+  mutate(D057 = (((D057 - 1) / 3) - 1) * -1 ) %>% 
+  mutate(D063_B = (D063_B - 1) / 2) %>%
   # create women_index variable
-  mutate(women_index = C001 + D057 - D063_B)
+  mutate(women_index = (C001 + D057 + D063_B) / 3)
 ```
 ---
 # Histogramm geom_histogram
@@ -422,19 +425,19 @@ Das Ziel eines Histogrammes ist die Verteilung einer Variable darzustellen aber 
 
 R wählt die Säulenbreite und damit die Anzahl der Säulen automatisch. Wir können diese aber auch manuell festlegen mit `binwidth = Säulenbreite in Einheit der Variable` und somit die Komplexität reduzieren. 
 
-Wir wählen `binwidth = 1`, somit eine Standardabweichung.
+Wir wählen `binwidth = 0.125`, um 8 Säulen zu haben.
 ```{r geom hist3, eval=FALSE}
 wvs_data_scale %>%
   filter(S003 == "DEU") %>%
   ggplot(aes(x = women_index)) +
-  geom_histogram(binwidth = 1) # bin width 1 standard deviation
+  geom_histogram(binwidth = 0.125) # bin width 0.125 = 8 bars
 ```
 ---
 ```{r geom hist4, echo=FALSE}
 wvs_data_scale %>%
   filter(S003 == "DEU") %>%
   ggplot(aes(x = women_index)) +
-  geom_histogram(binwidth = 1) # Säulenbreite ist eine 1 Standardabweichung
+  geom_histogram(binwidth = 0.125) # bin width 0.125 = 8 barsg
 ```
 ---
 # Visualisierung Dichteplots geom_density
@@ -477,7 +480,7 @@ Mit `facet_grid()` können wir in einer Visualisierung je Gruppe einen Plot getr
 ```{r facet_grid1, eval=FALSE}
 wvs_data_scale %>%
   ggplot(aes(x = women_index)) +
-  geom_histogram(binwidth = 1) +
+  geom_histogram(binwidth = 0.125) + # bin width 0.125 = 8 bars
   facet_grid(cols = vars(S003), # "SWE" & "DEU" in separate columns
              rows =vars(X001))  # men and women in separate rows
 ```
@@ -488,7 +491,7 @@ wvs_data_scale %>%
 ```{r facet_grid2, echo=FALSE}
 wvs_data_scale %>%
   ggplot(aes(x = women_index)) +
-  geom_histogram(binwidth = 1) +
+  geom_histogram(binwidth = 0.125) + # bin width 0.125 = 8 bars
   facet_grid(cols = vars(S003), 
              rows =vars(X001))
 ```
@@ -528,3 +531,119 @@ Falls Sie noch Fragen haben, nutzen Sie das **Forum** auf moodle und unterstütz
 
 Nutzen Sie auch unsere **R Sprechstunde**.  
 Jeden Donnerstag von 11:00 bis 11:45 auf zoom oder im Anschluss an die zoom-Sitzung zu Familienpolitik (Link finden Sie auf moodle).
+---
+class: inverse, middle
+# Archiv: Index erstelllen mit sclale()
+Bei dem folgenden Ansatz der Erstellung eines Indexes werden Variablen mit mehr Ausprägungen bevorzugt.
+---
+# Index erstellen - mit scale()
+Für die Verwendung eines Histogramms benötigen wir eine kontinuierliche numerische Variable. Leider gibt es im WVS nur wenige numerische Variablen, da die meisten Surveyfragen mit einer Likert-Skala oder einer Nominal-Skala beantwortet werden. 
+
+Daher bilden wir einen Index aus den unterschiedlichen Variablen zur Einstellung bezüglich der Erwerbsarbeit von Frauen. 
+* Vor der Bildung des Indexes standardisieren wir die Teilvariablen mit `scale()`. 
+* Die neuen Werte sind die Abweichung vom Mittelwert relativ zur Standardabweichung. Der Mittelwert der transformierten Variablen ist nun 0 und die Standardabweichnung 1.
+* Die Bildung des Index ist simple: Wir addieren die einzelnen Teilvariablen und ziehen die Werte von `D063_B` ab, da die Antworten nicht in die gleiche Aussagerichtung gehen. 
+
+Umso negativer der Wert des Indexes umso mehr stimmen die Leute zu, dass Frauen Hausfrauen sein sollen, Männer auf dem Arbeitsmarkt einen Vorzug haben sollen und dass ein Beruf die Unabhängigkeit von Frauen **nicht** fördert (Variablenwerte umgedreht für `D063_B`, weil wir sie abziehen von den anderen).
+---
+# Index erstellen - mit scale()
+```{r index 2c}
+wvs_data_scale <- wvs_data %>% 
+  # index creation for each country separately 
+  group_by(S003) %>% 
+  # answer "neither" transformed to NA
+  replace_with_na(replace = list(C001 = 3)) %>% 
+  # standardise each variable
+  mutate(C001 = scale(C001)) %>% 
+  mutate(D057 = scale(D057)) %>% 
+  mutate(D063_B = scale(D063_B)) %>%
+  # ungrouping probably not necessary
+  ungroup() %>% 
+  # create women_index variable
+  mutate(women_index = C001 + D057 - D063_B)
+```
+---
+```{r geom hist2c, echo=FALSE}
+wvs_data_scale %>%
+  filter(S003 == "DEU") %>%
+  ggplot(aes(x = women_index)) +
+  geom_histogram()
+```
+---
+# Histogramm geom_histogram
+Das Ziel eines Histogrammes ist die Verteilung einer Variable darzustellen aber auch die Komplexität zu reduzieren. 
+
+R wählt die Säulenbreite und damit die Anzahl der Säulen automatisch. Wir können diese aber auch manuell festlegen mit `binwidth = Säulenbreite in Einheit der Variable` und somit die Komplexität reduzieren. 
+
+Wir wählen `binwidth = 1`, somit eine Standardabweichung.
+```{r geom hist3c, eval=FALSE}
+wvs_data_scale %>%
+  filter(S003 == "DEU") %>%
+  ggplot(aes(x = women_index)) +
+  geom_histogram(binwidth = 1) # bin width 1 standard deviation
+```
+---
+```{r geom hist4c, echo=FALSE}
+wvs_data_scale %>%
+  filter(S003 == "DEU") %>%
+  ggplot(aes(x = women_index)) +
+  geom_histogram(binwidth = 1) # Säulenbreite ist eine 1 Standardabweichung
+```
+---
+# Visualisierung Dichteplots geom_density
+Für Dichteplots gilt das gleiche wie für Histogramme: Sie sind am besten für kontinuierliche numerische Variablen geeignet. Daher nehmen wir unsere neue Indexvariable.
+```{r density1c, eval=FALSE}
+wvs_data_scale %>%
+  filter(S003 == "SWE") %>% # data for Sweden
+  ggplot(aes(x = women_index)) +
+  geom_density()
+```
+Syntax bleibt gleich, nur das wir `geom_density()` verwenden.
+---
+```{r density2c, echo=FALSE}
+wvs_data_scale %>%
+  filter(S003 == "SWE") %>% 
+  ggplot(aes(x = women_index)) +
+  geom_density()
+```
+---
+# Boxplots
+Die Verteilung der Indexvariable je Land könen wir mit einem Boxplot vergleichen.
+```{r boxplot1c, eval=FALSE}
+wvs_data_scale %>% 
+  ggplot(aes(x = women_index, 
+             y = S003)) + # y-axis: "DEU" & "SWE"
+  geom_boxplot()
+```
+Da wir für die y-Achse die Ländervariable `S003` festlegen, bekommen wir je ein Boxplot pro Land. 
+---
+```{r boxplot2c, echo=FALSE}
+wvs_data_scale %>% 
+  ggplot(aes(x = women_index, y = S003)) +
+  geom_boxplot()
+```
+---
+# Plots je Gruppe (Länder)
+Letzte Woche haben wir gelernt, dass wir per `colour = ` oder auch `shape = ` Daten für unterschiedliche Gruppen anzeigen können. 
+
+Mit `facet_grid()` können wir in einer Visualisierung je Gruppe einen Plot getrennt erstellen. ZB für Frauen und Männer getrennt (Reihe) sowie für Deutschland und Schweden (Spalten).
+```{r facet_grid1c, eval=FALSE}
+wvs_data_scale %>%
+  ggplot(aes(x = women_index)) +
+  geom_histogram(binwidth = 1) +
+  facet_grid(cols = vars(S003), # "SWE" & "DEU" in separate columns
+             rows =vars(X001))  # men and women in separate rows
+```
+`facet_grid()` ist mit fast allen `geom_functions` kompatibel.
+
+*Es muss nicht beides `cols =` und `rows =` angeben werden. Es reicht auch, wenn nur eins von beiden verwendet wird. Probieren Sie es einfach aus.* 
+---
+```{r facet_grid2c, echo=FALSE}
+wvs_data_scale %>%
+  ggplot(aes(x = women_index)) +
+  geom_histogram(binwidth = 1) +
+  facet_grid(cols = vars(S003), 
+             rows =vars(X001))
+```
+
+*Schauen Sie im Codebook nach wie 1 und 2 für `X001` definiert sind* 
