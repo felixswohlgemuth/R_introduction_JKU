@@ -497,6 +497,6 @@ Die Korrelation der zwei Variablen ist negativ aber auch sehr schwach.
   * erstellen Sie eine Kreuztabelle mit absoluten Häufigkeiten.
   * erstellen Sie eine Kreuztabelle mit relativen Häufigkeiten.
   
-* Testen Sie die Korrelation zwei Variablen Ihrer Wahl.
+* Testen Sie die Korrelation zweier Variablen Ihrer Wahl.
 
 * Laden Sie Ihr Skript bis zum 15.05. 12:00 auf moodle hoch.
