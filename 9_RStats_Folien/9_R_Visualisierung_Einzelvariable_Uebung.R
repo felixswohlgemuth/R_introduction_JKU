@@ -77,5 +77,3 @@ wvs_data %>%
 
 # Visualisierung speichern
 ggsave("bar_hausfrau_de_se_gender.png", path = "figures", height = 6.5, width = 6.5)
-
-
