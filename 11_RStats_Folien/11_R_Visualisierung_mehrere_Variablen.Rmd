@@ -31,7 +31,7 @@ Sie können direkt mit dem verkürzten Datensatz arbeiten. Sie finden den Datens
 
 *Auf den folgenden Folien befindet sich das Skript mit dem ich den Datensatz erstellt habe. Sie müssen den Code nicht ausführen.*
 ---
-# WVS 6 Datensatz
+# WVS Welle 6 Datensatz
 ```{r data1, eval=FALSE}
 # Preliminaries
 library(tidyverse)
@@ -62,7 +62,7 @@ library(naniar)
 library(countrycode)
 ```
 ---
-# WVS 6 Datensatz
+# WVS Welle 6 Datensatz
 ```{r data2, eval=FALSE}
 # create NEW women_index
 wvs_w6_data <- wvs_w6_data %>% 
@@ -122,7 +122,7 @@ Per `chisq.test(table())` können wir überprüfen, ob zwei Variablen unabhängi
 ```{r chisqu}
 chisq.test(table(wvs_w6_data$V54, wvs_w6_data$V45))
 ```
-*Da unser p-value niedriger als 0.05 ist, sind `V54` und `V45` nicht unabhängig voneinander.*
+*Da unser p-value niedriger als 0.05 ist, sind `V54` und `V45` nicht unabhängig voneinander. Ein p-value von 0.05 bedeutet, dass wir die Null-Hypothese (Die zwei Variablen sind unabhängig voneinander) mit einer Wahrscheinlichkeit von 95% ablehnen. D.h. mit einer Wahrscheinlichkeit von 5% könnten wir falsch liegen. 95% ist ein gängiges Signifikanzniveau in den Sozialwissenschaften und wird in Regressionstabellen meist mit einem Stern hinter dem Regressionswert dargestellt. Mehr Infos zur Interpretation zB: https://www.ls4.soziologie.uni-muenchen.de/studium_lehre/archiv/sose17/methoden2/folien/m2_vorlesung_03_150517.pdf* 
 ---
 # Korrelationen
 Ob kontinuierliche Variablen zusammenhängen, können wir mit `cor()` testen. 
@@ -144,12 +144,47 @@ Die Korrelation der Ausgaben für Familienpolitik mit dem Anteil von Frauen im P
 Wie genau der Zusammenhang zwischen den Variablen ist, erkennt man am besten mit Visualisierungen. 
 ---
 class: inverse, middle
+# R Sprechstunde Inhalte
+Folgende Punkte haben wir diese Woche in der R Sprechstunde (14.05.) besprochen:
+---
+# Tabelle händisch erstellen
+R erstellt mit `table()`, `crosstab()` und `xtab()` Kreuztabellen auf Basis ausgewählter Variablen. Falls Sie aber händisch Tabellen in R erstellen möchten, gibt es verschiedene Möglichkeiten:
+
+* Tabelle auf Basis einer Matrix erstellen:
+```{r table1}
+# Werte 188, 234949, 19, 1, 8823, 82930
+# verteilt auf 3 Reihen und 2 Spalten 
+# Werten werden nacheinander auf Spalten verteilt
+
+t1 <- matrix(c(188, 234949, 19, 1, 8823, 82930), nrow = 3, ncol = 2, byrow = FALSE)
+# Reihen- und Spaltennamen definieren
+colnames(t1) <- c("yes", "no")
+rownames(t1) <- c("agree", "neither", "disagree")
+t1
+```
+---
+# Tabelle händisch erstellen
+* Tabelle auf Basis eines dataframes erstellen:
+```{r table2}
+# 2 Variablen = Spalten mit je 3 Werten erstellen
+yes <- c(188, 23494, 19)
+no <- c(1, 8823, 82930)
+t2 <- data.frame(yes, no)
+# Reihennamen definieren
+row.names(t2) <- c("agree", "neither", "disagree")
+t2
+```
+*Falls Sie nicht weiter mit der Tabelle in R rechnen wollen, empfehle ich Ihnen die Tabelle direkt in Word, Excel, Markdown-Editor oder Latex-Editor zu erstellen.*
+
+*Wie Sie Ergebnisse aus R in Word & Co einbinden kommen, werden wir in der letzten Stunde behandeln.* 
+---
+class: inverse, middle
 # Visuelle Darstellung mehrerer Variablen
 ---
 # Zusammenhang zwischen Variablen visualisieren
 `chisq.test()` und `cor()` zeigt uns die Stärke des Zusammenhangs zwischen Variablen unterschiedlichen Typs. 
 
-Manchmal sind die Tests nicht ganz eindeutig oder wir wollen erstmal die Variablen finden, die eventuell zusammenhängen. Das geht am besten mit der Visualisierung der Zusammenhangs mehrerer Variablen. 
+Manchmal sind die Tests nicht ganz eindeutig oder wir wollen erstmal die Variablen finden, die eventuell zusammenhängen. Das geht am besten mit Plots mehrerer Variablen. 
 
 ---
 #  Zusammenhang kategorialer Variablen
@@ -194,7 +229,7 @@ Ein Boxplot illustriert die Verteilung der Werte einer Variable.
 # Zusammenhang kategorialer und kontinuierlicher Variablen
 Eigentlich haben wir schon die Verteilung einer kontinuierlichen Variable in Beziehung zu kategorialen Variablen gesetzt. Wir haben Boxplots getrennt für Schweden und Deutschland sowie für Männer und Frauen in einem Plot erstellt.
 
-Das gleiche können wir auch für jedes Antwortitem oder Level anderer kategorialer Variablen getrennt machen. Wir erzeugen ein Boxplot der Verteilung von `women_index` für jedes Level von `Y003` "Autonomy Index".
+Das Gleiche können wir auch für jedes Antwortitem oder Level kategorialer Variablen getrennt machen. Wir erzeugen ein Boxplot der Verteilung von `women_index` für jedes Level von `Y003` "Autonomy Index".
 ```{r boxplot 1, eval=FALSE}
 wvs_w6_data %>% 
   drop_na(Y003, women_index) %>%
@@ -279,15 +314,24 @@ Eine Möglichkeit mit vielen Datenpunkten in einem Plot umzugehen, ist die Unter
 * Beim CWS Datensatz bietet es sich an nach Jahrzehnten zu unterteilen und zu schauen ob sich die Beziehung zwischen dem Anteil der Frauen im Parlament und den öffentlichen Ausgaben für Familienpolitik verändert hat. 
 ---
 # Visualisierung vieler Datenpunkte
-Das machen wir mit `facet_grid()`. Da keine Werte für die Zeit 1960 - 1979 existieren, lasse ich die zwei Jahrzehnte weg.
-```{r smooth 7, eval=FALSE}
+```{r smooth 7}
 # create categorical decade variable
 cws_data <- cws_data %>% 
-  mutate(year_10s = cut(year, breaks = c(1960, 1969, 1979, 1989, 1999, 2009, 2018),
+  mutate(year_10s = forcats::fct_explicit_na(
+           cut(year, breaks = c(1960, 1969, 1979, 1989, 1999, 2009, 2018),
                         labels = c("60s", "70s", "80s", "90s", "00s", "10s"),
-                        include.lowest = TRUE))
-         
-
+                        include.lowest = TRUE)))
+# cor() works also with dplyr:summarise()
+cws_data %>% 
+    group_by(year_10s) %>% 
+    drop_na(fempar, family_pub, year_10s) %>% 
+    summarise(COR = cor(fempar, family_pub))
+```
+*Der Zusammenhang hat in den letzten zwei Jahrzehnten stark abgenommen.*
+---
+# Visualisierung vieler Datenpunkte
+Die Visualisierung machen wir mit `facet_grid()`. Da keine Werte für die Zeit 1960 - 1979 existieren, lasse ich die zwei Jahrzehnte weg.
+```{r smooth 7a, eval=FALSE}
 cws_data %>% 
   filter(year_10s %in% c("80s", "90s", "00s", "10s")) %>% 
   ggplot(aes(y = family_pub, x = fempar)) +
@@ -296,15 +340,9 @@ cws_data %>%
   facet_grid( 
     rows = vars(year_10s))
 ```
-*Der Zusammenhang scheint über alle Jahrzehnte ähnlich zu sein. Jedoch gibt es große Unterschiede bei der Verteilung des Anteils von Frauen im Parlament über die Jahrzehnte.*
+*Die Regressionslinie scheint über alle Jahrzehnte ähnlich zu sein. Jedoch gibt es große Unterschiede bei der Verteilung des Anteils von Frauen im Parlament.*
 ---
 ```{r smooth 8, echo=FALSE, fig.height=6, fig.width=9.5, fig.align= 'center', dpi=150}
-cws_data <- cws_data %>% 
-  mutate(year_10s = cut(year, breaks = c(1960, 1969, 1979, 1989, 1999, 2009, 2018),
-                        labels = c("60s", "70s", "80s", "90s", "00s", "10s"),
-                        include.lowest = TRUE))
-         
-
 cws_data %>% 
   filter(year_10s %in% c("80s", "90s", "00s", "10s")) %>% 
   ggplot(aes(y = family_pub, x = fempar)) +
@@ -315,7 +353,7 @@ cws_data %>%
 ```
 ---
 # Visualisierung vieler Datenpunkte
-Eine weitere Möglichkeit mit einer Vielzahl von Datenpunkten umzugehen, ist ein Heatmap zu erstellen. Mit `geom_bin2d()` erstellen wir Plot in dem wir die Anzahl von Datenpunkten anhand der Helligkeit der Farbe erkennen. 
+Eine weitere Möglichkeit mit einer Vielzahl von Datenpunkten umzugehen, ist ein Heatmap zu erstellen. Mit `geom_bin2d()` erstellen wir ein Plot in dem wir die Anzahl von Datenpunkten anhand der Helligkeit der Farbe erkennen. 
 ```{r bin2d1, eval=FALSE}
 cws_data %>% 
   ggplot(aes(y = family_pub, x = fempar)) +
@@ -330,7 +368,7 @@ cws_data %>%
 ```
 ---
 # Visualisierung vieler Datenpunkte
-Das gleiche geht auch mit Hexagone anstatt Quadraten. Dafür verwenden wir `geom_hex()` aus dem hexbin-Paket.
+Das Gleiche geht auch mit Hexagone anstatt Quadraten. Dafür verwenden wir `geom_hex()` aus dem hexbin-Paket.
 ```{r hex1, eval=FALSE}
 # install.packages("hexbin")
 library(hexbin)
@@ -369,13 +407,15 @@ cws_data %>%
 
 * Wählen Sie bis zu 6 Variablen aus.
 
-* Visualisieren Sie den Zusammenhang der 6 Variablen per `ggpairs()`.
+* Visualisieren Sie den Zusammenhang der 6 Variablen mit `ggpairs()`.
 
 * Wählen Sie anhand des Plots zwei Variablen aus.
 
 * Visualisieren Sie den Zusammenhang der zwei Variablen mit einer passenden `geom_function`.
 
 * Erklären Sie kurz in einem Kommentar wie die Variablen zusammenhängen.
+
+* Laden Sie ihr R Skript bis zum 29.05 12:00 auf moodle hoch.
 
 ---
 class: inverse, middle

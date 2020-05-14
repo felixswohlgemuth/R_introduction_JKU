@@ -14,9 +14,9 @@
 | X041        | V235        | Are you the chief wage earner in your house                  | 1.- Yes<br/>2.- No                                           | ord.factor |
 | Y001        | Y001        | Materialist/postmaterialist 12-item index                    | 0.- Materialist<br/>1.- 1<br/>2.- 2<br/>3.- 3<br/>4.- 4<br/>5.- Post-materialist | ord.factor |
 | Y002        | Y002        | Post-materialist index (4-item)                              | 1.- Materialist<br/>2.- Mixed<br/>3.- Postmaterialist        | ord.factor |
-| Y003        | Y003        | Autonomy Index AUSNAHEM -x !!!!!! -5 NA                      | -2-.- Obedience/Religious Faith<br/>-1-.- -1<br/>0.- 0<br/>1.- 1<br/>2.- Determination, perseverance/Independence | ord.factor |
+| Y003        | Y003        | Autonomy Index                                               | -2-.- Obedience/Religious Faith<br/>-1-.- -1<br/>0.- 0<br/>1.- 1<br/>2.- Determination, perseverance/Independence | ord.factor |
 | A001        | V4          | Important in life: Family                                    | 1.- Very important<br/>2.- Rather important<br/>3.- Not very important<br/>4.- Not at all important | ord.factor |
-| C001        | V45         | When jobs are scarce, men should have more right to a job than women | 1.- Agree<br/>2.- Neither<br/>3.- Disagree                   | ord.factor |
+| C001        | V45         | "When jobs are scarce, men should have more right to a job than women" | 1.- Agree<br/>2.- Neither<br/>3.- Disagree                   | ord.factor |
 | D001        | V102        | How much you trust: Your family                              | 1.- Trust completely<br/>2.- Trust somewhat<br/>3.- Do not trust very much<br/>4.- Do not trust at all | ord.factor |
 | D057        | V54         | Being a housewife is just as fulfilling as working for pay   | 1.- Agree strongly<br/>2.- Agree<br/>3.- Disagree<br/>4.- Strongly disagree | ord.factor |
 | D061        | V50         | When a mother works for pay, the children suffer             | 1.- Agree strongly<br/>2.- Agree<br/>3.- Disagree<br/>4.- Strongly disagree | ord.factor |
