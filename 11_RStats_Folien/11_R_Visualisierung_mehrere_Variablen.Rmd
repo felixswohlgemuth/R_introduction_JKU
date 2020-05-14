@@ -1,5 +1,5 @@
 ---
-title: "Datenanalyse mit R - #10 Visuelle Darstellung mehrerer Variablen"
+title: "Datenanalyse mit R - #11 Visuelle Darstellung mehrerer Variablen"
 author: "Tobias Wiß, Carmen Walenta und Felix Wohlgemuth"
 institute: "gespol, JKU"
 date: "15.05.2020"
