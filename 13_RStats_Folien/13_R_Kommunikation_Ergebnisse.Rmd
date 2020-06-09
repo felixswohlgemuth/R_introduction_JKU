@@ -324,9 +324,9 @@ stargazer(lm_90, lm_00, lm_10,
 
 * Erstellen Sie eine Tabelle mit deskriptiven Statistikmaßen und kopieren Sie diese in ein Worddokument.
 
-* Erstellen Sie ein Regressionmodell mit `lm()`.
+* Erstellen Sie ein Regressionsmodell mit `lm()`.
 
-* Erstellen Sie für das Modell eine Regressiontabelle und kopieren Sie diese in das Worddokument.
+* Erstellen Sie für das Modell eine Regressionstabelle und kopieren Sie diese in das Worddokument.
 
 * Laden Sie Ihr R-Skript und das Worddokument (gerne als pdf) bis zum 19.06.2020 12:00 auf moodle hoch.
 ---
