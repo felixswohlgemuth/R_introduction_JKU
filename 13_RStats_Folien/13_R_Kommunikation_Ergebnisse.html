@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Datenanalyse mit R - #13 Kommunikation von Ergebnissen 1</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Tobias Wiß, Carmen Walenta und Felix Wohlgemuth" />
+    <script src="libs/header-attrs-2.2/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: inverse, middle 
+### Datenanalyse mit R
+# # 13 Kommunikation von Ergebnissen 1
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 05.06.2020
+![logo](figures/gespol_logo.png)
+
+---
+# Daten für diese Woche
+
+Der Comparative Welfare States 2020 Datensatz beinhaltet Variablen zu den Ausgaben für Sozialpolitik, aber auch sozioökonomische, makroökonomische, demographische und politische Variablen für 22 Länder von 1960 bis 2018. 
+
+Den Datensatz und das Codebook finden Sie unter:  https://www.lisdatacenter.org/news-and-events/comparative-welfare-states-dataset-2020/ 
+
+Sie finden die Daten und das Codebook natürlich auch auf moodle.
+
+```r
+library(tidyverse)
+library(readxl)
+cws_data &lt;- read_excel("_raw/CWS-data-2020.xlsx")
+```
+---
+class: inverse, middle
+## Wiederholung
+# (multiple) lineare Regression
+---
+# lineare Regression - Modell
+Ein lineares Modell wird mit `lm(abhängige Variable ~ unabhänge Variable, data = Dataframe)` erstellt. 
+
+*Funktionen die nicht aus dem tidyverse stammen, wie zB `lm()`, können auch mit `%&gt;%` kombiniert werden. Mit `.` werden die Daten aus %&gt;% als Input festgelegt.*
+
+```r
+lm1 &lt;- cws_data %&gt;% 
+  filter(year == 1990) %&gt;% 
+* lm(family_pub ~ fempar, data = . )
+```
+---
+# lineare Regression - Ergebnisse
+`summary(lm1)` zeigt die Ergebnisse des linearen Regressionsmodels:
+
+```
+## 
+## Call:
+## lm(formula = family_pub ~ fempar, data = .)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.35164 -0.54523 -0.03309  0.61028  1.32332 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.61101    0.27648   2.210   0.0389 *  
+## fempar       0.07225    0.01479   4.885 8.97e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7202 on 20 degrees of freedom
+## Multiple R-squared:  0.544,	Adjusted R-squared:  0.5212 
+## F-statistic: 23.86 on 1 and 20 DF,  p-value: 8.967e-05
+```
+---
+# lineare Regression - Ergebnisse
+Alternativ kann auch `tidy()` und `glance()` aus dem broom-Paket verwendet werden.  
+Der Output ist ein dataframe und kann in einem eigenen Objekt gespeichert werden. Dadurch können wir den Output weiterverwenden und zB mit `kable()` aus dem kableExtra-Paket die Ergebnisse in einer html-Tabelle darstellen:
+
+```r
+library(broom)
+*lm1_coeff &lt;- tidy(lm1)
+
+library(kableExtra)
+kable(lm1_coeff) %&gt;% kable_styling(bootstrap_options  = "condensed")
+```
+
+&lt;table class="table table-condensed" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.611015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2764764 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.210008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0389259 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fempar &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.072246 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0147908 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.884512 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000897 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+# lineare Regression - Ergebnisse
+*Wie `kable()` genau funktioniert und wie Ergebnisse von R nach Word übetragen werden, behandeln wir nach der Wiederholung.*
+
+```r
+*lm1_fit &lt;- glance(lm1)
+kable(lm1_fit) %&gt;% kable_styling(bootstrap_options  = "condensed") %&gt;% scroll_box(width = "750px")
+```
+
+&lt;div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:750px; "&gt;&lt;table class="table table-condensed" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; r.squared &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; adj.r.squared &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sigma &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; statistic &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p.value &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; logLik &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; AIC &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; BIC &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; deviance &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; df.residual &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.5439876 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5211869 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7202122 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23.85845 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.97e-05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -22.94763 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51.89526 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55.16839 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.37411 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+---
+# lineare Regression - Vorhersagen
+Mit `augment()` werden dem ursprünglichen Datensatz (Werte der abhängigen und unabhängigen Variable(n) im Modell) die vorhergesagten Werte `.fitted` und die Residuen `.resid` hinzugefügt:
+
+```r
+*lm1_augment &lt;- augment(lm1)
+kable(lm1_augment) %&gt;% kable_styling(bootstrap_options  = "condensed") %&gt;% scroll_box(width = "750px", height = "280px")
+```
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:280px; overflow-x: scroll; width:750px; "&gt;&lt;table class="table table-condensed" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; family_pub &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; fempar &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .fitted &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .se.fit &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .resid &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .hat &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .sigma &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .cooksd &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; .std.resid &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.510 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.76 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0993976 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2011455 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4106024 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0780009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7323810 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0149118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5937392 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2.530 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.67 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.0320928 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1652296 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4979072 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0526326 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7295431 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0140141 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7102785 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2.211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.49 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2243831 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1856472 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9866169 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0664440 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7008048 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0715355 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4178095 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.578 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5661065 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1573520 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9881065 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0477335 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7014578 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0495408 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.4059310 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3.193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32.96 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.9922416 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2998826 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2007584 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1733731 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7371837 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0098573 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3065904 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3.140 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.8867625 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2815508 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2532375 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1528244 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7362213 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0131629 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3820154 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2.435 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.93 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1116794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1995305 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.3233206 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0767534 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6679644 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1519992 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.9122546 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.828 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20.54 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.0949468 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1704019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.2669468 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0559793 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7362289 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0043148 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.3814815 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.651 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.67 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9484036 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2223694 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.2974036 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0953299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7354320 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0099309 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.4341507 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.912 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1767008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1913044 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7352992 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0705552 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7179065 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0425656 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0589899 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.872 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5400979 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1586006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.6680979 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0484941 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7220224 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0230460 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.9509855 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.357 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.34 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7800705 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2484391 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.4230705 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1189924 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7316510 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0264505 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.6258387 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.865 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.33 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5740535 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1570045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2909465 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0475229 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7357502 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0042743 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4139285 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.563 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21.33 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.1520211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1757841 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5890211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0595714 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7256645 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0225267 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8433493 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2.512 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.49 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8023507 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1541852 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7096493 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0458315 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7198802 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0244372 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0087203 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2.689 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35.76 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.1945302 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3361257 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5055302 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2178123 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7271931 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0877008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7936539 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.687 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.1600842 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1933527 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.4730842 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0720742 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7302819 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0180584 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.6819010 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.312 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.6636385 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1542248 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.3516385 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0458551 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6672562 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0887011 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.9212899 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4.033 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.3852595 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3712897 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6477405 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2657693 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7182828 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1993842 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0496010 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.064 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.6224583 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1552399 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.5584583 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0464607 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7271806 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0153617 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7940740 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.752 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0668869 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2055077 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6851131 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0814208 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7204943 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0436592 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9925296 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.455 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0748340 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2044300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.6198340 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0805690 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7238876 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0352963 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8975431 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+---
+# lineare Regression - Vorhersagen
+Mit `augment()` können auch für selbst gewählte Werte der unabhängigen Variable(n) die Werte der abhängigen Variable vorhergesagt werden. Dafür benötigen wir ein Dataframe mit neuen Werte für fempar:
+
+```r
+new_fempar &lt;- data.frame("fempar" = c(0, 25, 50, 75, 100))
+*lm1_predict &lt;- augment(lm1, newdata = new_fempar)
+kable(lm1_predict)
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; fempar &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .fitted &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; .se.fit &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.611015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2764764 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.417164 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2076937 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.223313 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5322544 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.029461 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8927001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.835610 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2585678 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+# lineare Regression - Vorhersagen
+Für Vorhersagen kann auch der `predict()` Befehl verwendet werden. Dem Output fehlen jedoch die selbst gewählten Werte und der Output ist auch kein Dataframe: *(Mehr Infos: http://www.sthda.com/english/articles/40-regression-analysis/166-predict-in-r-model-predictions-and-confidence-intervals/)*
+
+```r
+*lm1_predict2 &lt;- predict(lm1, newdata = new_fempar, interval = "confidence") # 95% Konfidenzintervall
+lm1_predict2 &lt;- data.frame(new_fempar, lm1_predict2)
+kable(lm1_predict2)
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; fempar &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; fit &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lwr &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; upr &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.611015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0342953 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.187735 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.417164 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.9839224 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.850405 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.223313 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.1130494 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.333576 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.029461 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.1673217 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.891601 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.835610 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.2102839 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.460937 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+*Das 95%-Konfidenzintervall für die vorhergesagten Werte ist das graue Band rund im die Regressionsgeraden bei `geom_smooth(method = "lm")`* 
+---
+# lineare Regression - Annahmen
+| Annahme                               | Überprüfungsmethode                                  |
+| :------------------------------------ | :--------------------------------------------------- |
+| Linearität des Zusammenhangs          | Scatterplot                                          |
+| Keine extremen Ausreißer              | Scatterplot                                          |
+| Normalverteilung der Residuen         | Histogramm der Residuen                              |
+| Konstante Varianz (Homoskedastizität) | Scatterplot der Residuen und vorhergesagten y-Werten |
+| Unabhängigkeit der Beobachtungen      | theoretische/konzeptionelle Überprüfung              | 
+---
+# multiple lineare Regression
+Für ein Regressionsmodell mit mehreren unabhängigen Variablen werden in `lm()` mehrere Variablen getrennt durch `+` angegeben.
+
+```r
+# optional variable preparation
+cws_data &lt;- cws_data %&gt;% 
+  mutate(fem_employment = 100 * (flabfo / tlabfo))
+
+# multiple linear model specification
+# for 3 different years
+cws_data_90 &lt;- cws_data %&gt;% filter(year == 1990) 
+*lm_90 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_90 )
+
+cws_data_00 &lt;- cws_data %&gt;% filter(year == 2000)
+*lm_00 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_00 )
+
+cws_data_10 &lt;- cws_data %&gt;% filter(year == 2010)
+*lm_10 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_10 )
+```
+*Um die Ergebnisse der multiplen Regressionsmodelle anzuzeigen, wird auch `summary()` oder `tidy()` und `glance()` verwendet.*
+---
+# multiple lineare Regression
+*Folgende Variablen werden im Beispiel verwendet:*  
+
+|  | Name         | Inhalt                                                                                             |     
+| :---- | :------------- | :------------------------------------------------------------------------------------------------- |
+| AV    | family_pub     | Public expenditure on family benefits (% GDP)                                      |     
+| UV1   | socx_pub       | Total public social expenditure (% GDP)                                             |     
+| UV2   | fempar         | Share of seats in parliament held by women                                                         |     
+| UV3   | rtcrseat       | Share of seats in parliament won by parties classified as right Christian                          |     
+| UV4   | leftseat       | Share of seats in parliament won by parties classified as left                                     |     
+| UV5   | ud             | Union density (net union membership as a % of employed wage and salary earners) |     
+| UV6   | fem_employment | Share of female labour force (flabfo), as % of total labour force (tlabfo)                |     
+| UV7   | ptemp_f        | Part-time employment for females, all ages, as a % of employment                          |     
+---
+
+```
+## 
+## Call:
+## lm(formula = family_pub ~ socx_pub + fempar + rtcrseat + leftseat + 
+##     ud + fem_employment + ptemp_f, data = cws_data_90)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.64488 -0.07919  0.03027  0.08847  0.91149 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)    -5.163106   1.744368  -2.960   0.0160 *
+## socx_pub        0.102210   0.041446   2.466   0.0358 *
+## fempar         -0.018443   0.022457  -0.821   0.4327  
+## rtcrseat        0.007053   0.012889   0.547   0.5975  
+## leftseat        0.012418   0.013082   0.949   0.3673  
+## ud              0.030625   0.010711   2.859   0.0188 *
+## fem_employment  0.074036   0.042623   1.737   0.1164  
+## ptemp_f         0.012267   0.012824   0.957   0.3638  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5356 on 9 degrees of freedom
+##   (5 observations deleted due to missingness)
+## Multiple R-squared:  0.8701,	Adjusted R-squared:  0.769 
+## F-statistic: 8.609 on 7 and 9 DF,  p-value: 0.00225
+```
+---
+
+```
+## 
+## Call:
+## lm(formula = family_pub ~ socx_pub + fempar + rtcrseat + leftseat + 
+##     ud + fem_employment + ptemp_f, data = cws_data_00)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.75829 -0.51161  0.04386  0.42261  1.15733 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)    -4.442503   3.055356  -1.454    0.174
+## socx_pub        0.088712   0.054493   1.628    0.132
+## fempar         -0.015505   0.024798  -0.625    0.545
+## rtcrseat       -0.010555   0.023117  -0.457    0.657
+## leftseat        0.008798   0.014443   0.609    0.555
+## ud              0.021958   0.012426   1.767    0.105
+## fem_employment  0.071316   0.077449   0.921    0.377
+## ptemp_f         0.027980   0.018149   1.542    0.151
+## 
+## Residual standard error: 0.7445 on 11 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.6101,	Adjusted R-squared:  0.362 
+## F-statistic: 2.459 on 7 and 11 DF,  p-value: 0.0881
+```
+---
+
+```
+## 
+## Call:
+## lm(formula = family_pub ~ socx_pub + fempar + rtcrseat + leftseat + 
+##     ud + fem_employment + ptemp_f, data = cws_data_10)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.99162 -0.37908  0.02536  0.35363  1.45718 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)    -14.42880    5.50698  -2.620   0.0212 *
+## socx_pub         0.09968    0.05682   1.754   0.1029  
+## fempar          -0.06430    0.03201  -2.009   0.0658 .
+## rtcrseat        -0.01467    0.02421  -0.606   0.5551  
+## leftseat         0.02237    0.01914   1.168   0.2637  
+## ud               0.04138    0.01587   2.608   0.0217 *
+## fem_employment   0.27079    0.11430   2.369   0.0340 *
+## ptemp_f          0.05985    0.02448   2.445   0.0295 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.8345 on 13 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:   0.58,	Adjusted R-squared:  0.3538 
+## F-statistic: 2.565 on 7 and 13 DF,  p-value: 0.06773
+```
+---
+class: inverse, middle
+#  Kommunikation von Ergebnissen 1
+---
+# R und Word
+Die Zusammenfassung der Regressionsergebnisse mit `summary()` beinhaltet alle wichtigen Informationen über unser Modell, doch leider sieht die Tabelle nicht so aus als ob sie direkt in Word kopiert werden kann. Natürlich können alle Outputs von R aus der Konsole kopiert und dann in Word oder Excel in Form gebracht werden. Aber es gibt eine Reihe von Befehlen, die das einfacher macht.
+
+Um einfache Tabellen und Regressionstabellen von R nach Word zu kopieren, benötigen wir ein Zwischenschritt. Mit `stargazer()` oder `kable()` erstellen wir zuerst html-Tabellen und speichern diese ab. html-Tabellen können einfach in einem Browser geöffnet, makiert und dann nach Word kopiert werden. Das Layout und Aussehen der kopierten Tabelle kann dann direkt in Word geändert und somit dem Textstil angepasst werden.
+
+*Alternativ können wir auch direkt Latex-Tabellen erstellen oder in R mit RMarkdown den Bericht schreiben. In der nächsten Sitzung wird es eine kurze Einführung in R Markdown geben. Alle Funktionen von heute können auch in R Markdown verwendet werden.* 
+---
+# Kommunikation - Deskriptive Statistik
+Wenn in `stargazer()` ein Dataframe ohne weitere Spezifikation angegeben wird, wird automatisch eine Tabelle mit deskriptiven Statistikmaßen erstellt:
+
+```r
+# install.package("stargazer")
+library(stargazer)
+cws_data_90  &lt;- cws_data %&gt;% 
+  filter(year == 1990) %&gt;% 
+  select(family_pub, socx_pub, fempar, rtcrseat, leftseat, ud, fem_employment, ptemp_f) %&gt;% 
+* as.data.frame() # select erstellt ein tibble, aber stargazer arbeitet mit Dataframes als Input
+
+*stargazer(cws_data_90, # Dataframe
+*         type = "html", # Dateityp
+*         out= "descriptives_90.html") # Speicherort
+```
+---
+# Kommunikation - Deskriptive Statistik
+Die html-Tabelle befindet sich unter dem Dateipfad, der bei `out = ` angegeben wurde. Dann die html-Datei im Browser öffnen, markieren und in das Worddokument kopieren. 
+
+![html_word](figures/html_word.gif)
+---
+# Kommunikation - Deskriptive Statistik
+&lt;table style="text-align:center"&gt;&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Statistic&lt;/td&gt;&lt;td&gt;N&lt;/td&gt;&lt;td&gt;Mean&lt;/td&gt;&lt;td&gt;St. Dev.&lt;/td&gt;&lt;td&gt;Min&lt;/td&gt;&lt;td&gt;Pctl(25)&lt;/td&gt;&lt;td&gt;Pctl(75)&lt;/td&gt;&lt;td&gt;Max&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;family_pub&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;1.734&lt;/td&gt;&lt;td&gt;1.041&lt;/td&gt;&lt;td&gt;0.312&lt;/td&gt;&lt;td&gt;0.733&lt;/td&gt;&lt;td&gt;2.493&lt;/td&gt;&lt;td&gt;4.033&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;socx_pub&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;18.924&lt;/td&gt;&lt;td&gt;4.747&lt;/td&gt;&lt;td&gt;10.927&lt;/td&gt;&lt;td&gt;15.108&lt;/td&gt;&lt;td&gt;22.849&lt;/td&gt;&lt;td&gt;27.237&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;fempar&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;15.545&lt;/td&gt;&lt;td&gt;10.626&lt;/td&gt;&lt;td&gt;2.340&lt;/td&gt;&lt;td&gt;7.098&lt;/td&gt;&lt;td&gt;20.322&lt;/td&gt;&lt;td&gt;38.400&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;rtcrseat&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;2.168&lt;/td&gt;&lt;td&gt;9.626&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;45&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;leftseat&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;38.964&lt;/td&gt;&lt;td&gt;15.063&lt;/td&gt;&lt;td&gt;0.000&lt;/td&gt;&lt;td&gt;34.300&lt;/td&gt;&lt;td&gt;48.475&lt;/td&gt;&lt;td&gt;56.400&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;ud&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;40.695&lt;/td&gt;&lt;td&gt;19.587&lt;/td&gt;&lt;td&gt;9.827&lt;/td&gt;&lt;td&gt;26.340&lt;/td&gt;&lt;td&gt;50.726&lt;/td&gt;&lt;td&gt;81.505&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;fem_employment&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;42.064&lt;/td&gt;&lt;td&gt;3.841&lt;/td&gt;&lt;td&gt;34.966&lt;/td&gt;&lt;td&gt;40.046&lt;/td&gt;&lt;td&gt;44.569&lt;/td&gt;&lt;td&gt;47.986&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;ptemp_f&lt;/td&gt;&lt;td&gt;18&lt;/td&gt;&lt;td&gt;25.492&lt;/td&gt;&lt;td&gt;11.273&lt;/td&gt;&lt;td&gt;10.624&lt;/td&gt;&lt;td&gt;18.541&lt;/td&gt;&lt;td&gt;29.763&lt;/td&gt;&lt;td&gt;52.514&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+*N* : Anzahl der Beobachtungen; *St. Dev.* : Standardabweichung; *Min* : Minimum; *Max* : Maximum; 
+*Pctl(25)* : 25%-Perzentil; *Mean* : arimethisches Mittel (50%-Perzentil); *Pctl(75)* : 75%-Perzentil
+---
+# Kommunikation - Deskriptive Statistik
+Die Varialennamen und die Darstellung der Maße können nun in Word geändert werden oder auch gleich in `stargazer()`. Der Vorteil ist wie immer, dass im R-Skript alles nachvollziehbar ist. Folgende Optionen können in `stargazer()` verwendet werden:
+* `digits = ` : Anzahl der Nachkommastellen
+* `title = ` : Tabellentitel
+* `covariate.labels = c()` : angezeigte Variablennamen  
+(neue Namen müssen in der gleichen Reihenfolge sein wie die Variablen im Dataframe)
+* `decimal.mark = "," ` : Deutsche Darstellung von Kommastellen
+
+*Für die Darstellung von Regressionsergebnissen können noch weitere Optionen verwendet werden.*
+---
+# Kommunikation - Deskriptive Statistik
+
+```r
+stargazer(cws_data_90,                
+*         digits = 2,
+*         decimal.mark = ",",
+*         title = "Deskriptive Statistik", # Tabellentitel
+*         covariate.labels = c("öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;",
+*                              "öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;",
+*                              "Anteil weibliche Parlamentsabgeordnete",
+*                              "Anteil Abgeordnete rechter christlicher Parteien",
+*                              "Anteil Abgeordnete linker Parteien",
+*                              "Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;",
+*                              "Anteil Frauen an Erwerbstätigen",
+*                              "Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen"),
+                    type = "html",          
+                    out= "descriptives_90.html")
+```
+*Da der Output eine html-Datei ist, können html-Tags wie `&lt;i&gt;&lt;/i&gt;` oder auch `&lt;strong&gt;&lt;/strong&gt;` verwendet werden* 
+---
+&lt;table style="text-align:center"&gt;&lt;caption&gt;&lt;strong&gt;Deskriptive Statistik&lt;/strong&gt;&lt;/caption&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Statistic&lt;/td&gt;&lt;td&gt;N&lt;/td&gt;&lt;td&gt;Mean&lt;/td&gt;&lt;td&gt;St. Dev.&lt;/td&gt;&lt;td&gt;Min&lt;/td&gt;&lt;td&gt;Pctl(25)&lt;/td&gt;&lt;td&gt;Pctl(75)&lt;/td&gt;&lt;td&gt;Max&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;1,73&lt;/td&gt;&lt;td&gt;1,04&lt;/td&gt;&lt;td&gt;0,31&lt;/td&gt;&lt;td&gt;0,73&lt;/td&gt;&lt;td&gt;2,49&lt;/td&gt;&lt;td&gt;4,03&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;18,92&lt;/td&gt;&lt;td&gt;4,75&lt;/td&gt;&lt;td&gt;10,93&lt;/td&gt;&lt;td&gt;15,11&lt;/td&gt;&lt;td&gt;22,85&lt;/td&gt;&lt;td&gt;27,24&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil weibliche Parlamentsabgeordnete&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;15,54&lt;/td&gt;&lt;td&gt;10,63&lt;/td&gt;&lt;td&gt;2,34&lt;/td&gt;&lt;td&gt;7,10&lt;/td&gt;&lt;td&gt;20,32&lt;/td&gt;&lt;td&gt;38,40&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Abgeordnete rechter christlicher Parteien&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;2,17&lt;/td&gt;&lt;td&gt;9,63&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;45&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Abgeordnete linker Parteien&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;38,96&lt;/td&gt;&lt;td&gt;15,06&lt;/td&gt;&lt;td&gt;0,00&lt;/td&gt;&lt;td&gt;34,30&lt;/td&gt;&lt;td&gt;48,48&lt;/td&gt;&lt;td&gt;56,40&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;40,69&lt;/td&gt;&lt;td&gt;19,59&lt;/td&gt;&lt;td&gt;9,83&lt;/td&gt;&lt;td&gt;26,34&lt;/td&gt;&lt;td&gt;50,73&lt;/td&gt;&lt;td&gt;81,50&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Frauen an Erwerbstätigen&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;42,06&lt;/td&gt;&lt;td&gt;3,84&lt;/td&gt;&lt;td&gt;34,97&lt;/td&gt;&lt;td&gt;40,05&lt;/td&gt;&lt;td&gt;44,57&lt;/td&gt;&lt;td&gt;47,99&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen&lt;/td&gt;&lt;td&gt;18&lt;/td&gt;&lt;td&gt;25,49&lt;/td&gt;&lt;td&gt;11,27&lt;/td&gt;&lt;td&gt;10,62&lt;/td&gt;&lt;td&gt;18,54&lt;/td&gt;&lt;td&gt;29,76&lt;/td&gt;&lt;td&gt;52,51&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+---
+# Tabelle mit  freien Inhalt
+Mit `kable()` aus dem kableExtra-Paket kann der Inhalt eines Dataframes als html-Tabelle exportiert werden. Der Inhalt kann zB ein gesamter Dataframes sein oder zB die Korrelation von `family_pub` und `fempar` je Level der `fed` Variable:
+
+```r
+cws_cor  &lt;- cws_data %&gt;% 
+  filter(year == 1990) %&gt;% 
+  select(family_pub, socx_pub, fempar, rtcrseat, leftseat, ud, fem_employment, ptemp_f, fed) %&gt;% 
+  as.data.frame() %&gt;%  
+  group_by(fed) %&gt;% 
+  summarise(COR = cor(fempar, family_pub))
+
+kable(cws_cor) %&gt;% 
+   save_kable(file = "cor_fed.html") 
+```
+*Mehr Infos zu `kable()`: https://haozhu233.github.io/kableExtra/awesome_table_in_html.html*
+---
+# Tabelle mit  freien Inhalt
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; fed &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; COR &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7480076 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9123703 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Das Aussehen der Tabelle kann am einfachsten in Word bearbeitet werden. 
+---
+# Regressionstabelle
+Der eigentliche Verwendungszweck von `stargazer()` ist die Erstelltung von Regressionstabellen. Dazu wird der Objektname des Regressionsmodells als Input angegeben:
+
+```r
+lm_90 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_90 )
+
+stargazer(lm_90, 
+          type = "html",
+          out = "lm_90_table.html")
+```
+---
+&lt;img src="figures/lm_90_table.png" style="width: 40%" /&gt;
+---
+# Regressionstabelle
+Der Vorteil von `stargazer()` ist, dass der Befehl auch mehrere Modelle in einer Regressionstabelle darstellen kann. Damit ist ein Vergleich von Modellen möglich:
+
+```r
+lm_90 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_90 )
+lm_00 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_00 )
+lm_10 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_10 )
+
+stargazer(lm_90, lm_00, lm_10,
+          type = "html",
+          out = "lm_table.html")
+```
+---
+&lt;img src="figures/lm_table.png" style="width: 60%" /&gt;
+---
+# Regressionstabelle
+Zusätzlich zu den bekannten Optionen, kann mit folgenden Optionen das Aussehen von Regressionstabellen verändert werden:
+* `column.labes = c()` : Modellnamen definieren
+* `dep.var.labels = c()` : Abhängige Variablennamen definieren
+* `no.space = TRUE` : Leerzeilen weglassen (hilft beim Kopieren in Word)
+
+```r
+stargazer(lm_90, lm_00, lm_10,
+*         column.labels = c("Jahr = 1990", "Jahr = 2000", "Jahr = 2010"),
+*         dep.var.labels = c("öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;"),
+*         covariate.labels = c("öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;",
+*                              "Anteil weibliche Parlamentsabgeordnete",
+*                              "Anteil Abgeordnete rechter christlicher Parteien",
+*                              "Anteil Abgeordnete linker Parteien",
+*                              "Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;",
+*                              "Anteil Frauen an Erwerbstätigen",
+*                              "Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen",
+*                              "Konstante"),
+*         no.space = TRUE,
+          type = "html",
+          out = "lm_table_2.html")
+```
+---
+&lt;img src="figures/lm_table_2.png" style="width: 90%" /&gt;
+---
+# Übung 13
+* Verwenden Sie Daten Ihrer Wahl (alternativ CWS Daten).
+
+* Wählen Sie eine abhängige Variable und mehrere unabhängige Variablen für ein Regressionsmodell aus.
+
+* Erstellen Sie eine Tabelle mit deskriptiven Statistikmaßen und kopieren Sie diese in ein Worddokument.
+
+* Erstellen Sie ein Regressionmodell mit `lm()`.
+
+* Erstellen Sie für das Modell eine Regressiontabelle und kopieren Sie diese in das Worddokument.
+
+* Laden Sie Ihr R-Skript und das Worddokument (gerne als pdf) bis zum 19.06.2020 12:00 auf moodle hoch.
+---
+## nächste Woche:
+# Kommunikation von Ergebnissen 2
+In der letzten Einheit beschäftigen wir uns weiter mit der Kommunikation von Ergebnissen.
+
+Falls Sie Fragen zur Darstellung Ihrer Ergebnisse in Word haben, dann können Sie mir gerne Fragen für die letzte Stunde schicken (bis spätestens 16.06.). Bitte schauen Sie sich vorher die Folien von dieser Woche an.
+
+Ich werde Ihnen eine kurze Einführung in R Markdown geben.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
