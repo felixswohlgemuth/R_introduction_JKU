@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Datenanalyse mit R - #14 Kommunikation von Ergebnissen 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Tobias Wiß, Carmen Walenta und Felix Wohlgemuth" />
+    <script src="libs/header-attrs-2.2/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: inverse, middle 
+### Datenanalyse mit R
+# # 14 Kommunikation von Ergebnissen 2
+### Tobias Wiß, Carmen Walenta und Felix Wohlgemuth
+### 19.06.2020
+![logo](figures/gespol_logo.png)
+
+---
+class: inverse, middle
+Vielen Dank für Ihre rege Teilnahme am R Kurs dieses Semester! Es hat mich gefreut, dass Sie das moodle-Forum und auch die R Sprechstunde genutzt haben. Danke für die spannenden Diskussionen und hoffentlich konnte ich Ihnen bei Ihren Fragen weiterhelfen.
+
+In der heutigen Einheit wiederholen wir nochmal wie Ergebnisse aus R in Word berichtet werden und zusätzlich werden wir noch kurz in R Markdown einsteigen. Diese Woche gibt es keine Übungsaufgabe und auch keine R Sprechstunde.
+---
+# Daten für diese Woche
+
+Der Comparative Welfare States 2020 Datensatz beinhaltet Variablen zu den Ausgaben für Sozialpolitik, aber auch sozioökonomische, makroökonomische, demographische und politische Variablen für 22 Länder von 1960 bis 2018. 
+
+Den Datensatz und das Codebook finden Sie unter:  https://www.lisdatacenter.org/news-and-events/comparative-welfare-states-dataset-2020/ 
+
+Sie finden die Daten und das Codebook natürlich auch auf moodle.
+
+```r
+library(tidyverse)
+library(readxl)
+cws_data &lt;- read_excel("_raw/CWS-data-2020.xlsx")
+
+# optional variable preparation
+cws_data &lt;- cws_data %&gt;% 
+  mutate(fem_employment = 100 * (flabfo / tlabfo))
+```
+---
+class: inverse, middle
+## Wiederholung
+# Kommunikation von Ergebnissen mit stargazer()
+---
+# R und Word
+Um die Ergebnisse von R mit einer Tabelle in Word zu präsentieren, kann mit `stargazer()` eine html-Tabelle erstellt werden. In einem Browser kann dann die ganze Tabelle markiert, kopiert und dann in Word eingefügt werden. `stargazer()` speichert die exportierte html-Tabelle in der vorher festgelegten Working Directory.
+
+Das Layout und Aussehen der Tabelle kann einfach in Word bearbeitet werden. Der Vorteil hierbei ist, dass Änderungen an der Tabelle direkt gesehen werden und dass die Tabelle an den Stil des Textes angepasst werden kann. Der Nachteil ist, dass bei kleinen Änderungen an den Daten der ganze Anpassungsprozess in Word wiederholt werden muss. 
+
+Das Aussehen und Layout der html-Tabelle kann auch gleich in `stargazer()` festgelegt werden. Der Anpassungsprozess ist somit einfacher wiederhol- und nachvollziehbar. Der letzte Feinschliff muss dann in Word gemacht werden.
+---
+# Tabelle Deskriptive Statistik
+Wenn in `stargazer()` ein Dataframe ohne weitere Spezifikationen als Input angegeben wird, erstellt `stargazer()` eine Tabelle mit deskriptiven Statistikmaßen für alle Variablen im Dataframe. Deshalb muss der Dataframe nur die Variablen enthalten, die man auch im Bericht darstellen möchte. 
+
+*`stargazer()` erwartet ein Dataframe als Input, deshalb kann vorher mit `str()` geprüft werden, ob das Inputobjekt ein Dataframe ist und gegebenenfalls umgewandelt werden. Da wir mit Funktionen aus dem tidyverse gearbeitet haben, ist das Datenobjekt ein tibble und kein klassischer Dataframe.* 
+
+
+```r
+library(stargazer)
+cws_data_90  &lt;- cws_data %&gt;% 
+  filter(year == 1990) %&gt;% 
+  select(family_pub, socx_pub, fempar, rtcrseat, leftseat, ud, fem_employment, ptemp_f)
+*str(cws_data_90)
+```
+
+```
+## tibble [22 x 8] (S3: tbl_df/tbl/data.frame)
+##  $ family_pub    : num [1:22] 1.51 2.53 2.211 0.578 3.193 ...
+##  $ socx_pub      : num [1:22] 13.1 23.1 24.4 17.5 21.9 ...
+##  $ fempar        : num [1:22] 6.76 19.67 8.49 13.22 32.96 ...
+##  $ rtcrseat      : num [1:22] 0 0 0 0 0 2.5 0 45.2 0 0 ...
+##  $ leftseat      : num [1:22] 54.1 48.4 34 14.6 45.3 40 52.8 45.4 47.9 13.3 ...
+##  $ ud            : num [1:22] 41.3 46.8 53.9 34 74.6 ...
+##  $ fem_employment: num [1:22] 41.6 41 42.4 44.4 46.2 ...
+##  $ ptemp_f       : num [1:22] NA NA 28.8 26.7 29.7 ...
+```
+---
+# Tabelle Deskriptive Statistik
+
+```r
+cws_data_90 &lt;- as.data.frame(cws_data_90)
+
+stargazer(cws_data_90,                
+    digits = 2,           
+    decimal.mark = ",",
+    title = "Deskriptive Statistik", 
+    covariate.labels = c(
+      "öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;", 
+      "öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;", 
+      "Anteil weibliche Parlamentsabgeordnete", 
+      "Anteil Abgeordnete rechter christlicher Parteien", 
+      "Anteil Abgeordnete linker Parteien", 
+      "Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;",
+      "Anteil Frauen an Erwerbstätigen", 
+      "Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen"), 
+    type = "html",          
+    out= "descriptives_90.html")
+```
+*In der Konsole wird der Code der html-Tabelle ausgegeben. In einem html-Dokument, wie diesen Folien, kann die Tabelle mit dem Code direkt angezeigt werden. Für Word müssen Sie die exportierte html-Datei mit einem Browser öffnen und in Word kopieren.*
+---
+&lt;table style="text-align:center"&gt;&lt;caption&gt;&lt;strong&gt;Deskriptive Statistik&lt;/strong&gt;&lt;/caption&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Statistic&lt;/td&gt;&lt;td&gt;N&lt;/td&gt;&lt;td&gt;Mean&lt;/td&gt;&lt;td&gt;St. Dev.&lt;/td&gt;&lt;td&gt;Min&lt;/td&gt;&lt;td&gt;Pctl(25)&lt;/td&gt;&lt;td&gt;Pctl(75)&lt;/td&gt;&lt;td&gt;Max&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;1,73&lt;/td&gt;&lt;td&gt;1,04&lt;/td&gt;&lt;td&gt;0,31&lt;/td&gt;&lt;td&gt;0,73&lt;/td&gt;&lt;td&gt;2,49&lt;/td&gt;&lt;td&gt;4,03&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;18,92&lt;/td&gt;&lt;td&gt;4,75&lt;/td&gt;&lt;td&gt;10,93&lt;/td&gt;&lt;td&gt;15,11&lt;/td&gt;&lt;td&gt;22,85&lt;/td&gt;&lt;td&gt;27,24&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil weibliche Parlamentsabgeordnete&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;15,54&lt;/td&gt;&lt;td&gt;10,63&lt;/td&gt;&lt;td&gt;2,34&lt;/td&gt;&lt;td&gt;7,10&lt;/td&gt;&lt;td&gt;20,32&lt;/td&gt;&lt;td&gt;38,40&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Abgeordnete rechter christlicher Parteien&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;2,17&lt;/td&gt;&lt;td&gt;9,63&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;45&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Abgeordnete linker Parteien&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;38,96&lt;/td&gt;&lt;td&gt;15,06&lt;/td&gt;&lt;td&gt;0,00&lt;/td&gt;&lt;td&gt;34,30&lt;/td&gt;&lt;td&gt;48,48&lt;/td&gt;&lt;td&gt;56,40&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;40,69&lt;/td&gt;&lt;td&gt;19,59&lt;/td&gt;&lt;td&gt;9,83&lt;/td&gt;&lt;td&gt;26,34&lt;/td&gt;&lt;td&gt;50,73&lt;/td&gt;&lt;td&gt;81,50&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Frauen an Erwerbstätigen&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;42,06&lt;/td&gt;&lt;td&gt;3,84&lt;/td&gt;&lt;td&gt;34,97&lt;/td&gt;&lt;td&gt;40,05&lt;/td&gt;&lt;td&gt;44,57&lt;/td&gt;&lt;td&gt;47,99&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen&lt;/td&gt;&lt;td&gt;18&lt;/td&gt;&lt;td&gt;25,49&lt;/td&gt;&lt;td&gt;11,27&lt;/td&gt;&lt;td&gt;10,62&lt;/td&gt;&lt;td&gt;18,54&lt;/td&gt;&lt;td&gt;29,76&lt;/td&gt;&lt;td&gt;52,51&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="8" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+---
+# Regressionstabelle
+Wenn ein Regressionsmodell als Input in `stargazer()` angegeben wird, erstellt `stargazer()` eine Regressionstabelle. Wie bei der Tabelle mit deskriptiven Statistikmaßen, kann der Inhalt und das Aussehen der Tabelle direkt in `stargazer()` verändert werden. Falls das nicht gemacht wird, verwendet `stargazer()` einfach die Variablennamen. Die Regressionskoeffizienten und die Parameter der Modellgüte werden dabei nicht verändert.
+
+
+```r
+lm_90 &lt;- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_90 )
+
+stargazer(lm_90,
+    column.labels = c("Jahr = 1990"), 
+    dep.var.labels = c("öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;"),
+    covariate.labels = c("öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;",
+      "Anteil weibliche Parlamentsabgeordnete", 
+      "Anteil Abgeordnete rechter christlicher Parteien",
+      "Anteil Abgeordnete linker Parteien",
+      "Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;", 
+      "Anteil Frauen an Erwerbstätigen",
+      "Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen",
+      "Konstante"),
+    no.space = TRUE, type = "html", out = "lm_90_table.html")
+```
+---
+class: center, middle 
+&lt;img src="figures/lm_90_table_2.png" style="width: 90%" /&gt;
+---
+# Regressionstabelle
+`stargazer()` kann auch die Ergebnisse mehrerer Regressionsmodelle in einer Tabelle gemeinsam anzeigen. Damit können Modelle verglichen werden. Dazu werden einfach als Input mehrere Regressionmodelle angegeben. Die Reihenfolge im Input legt die Reihenfolge in der Tabelle fest.
+
+```r
+lm_00 &lt;- cws_data %&gt;% filter(year == 2000) %&gt;% lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = . )
+lm_10 &lt;- cws_data %&gt;% filter(year == 2010) %&gt;% lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = . )
+
+stargazer(lm_90, lm_00, lm_10,
+    column.labels = c("Jahr = 1990", "Jahr = 2000", "Jahr = 2010"), 
+    dep.var.labels = c("öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;"), 
+    covariate.labels = c("öffentliche Sozialausgaben insgesamt &lt;i&gt;(% BIP)&lt;/i&gt;", 
+      "Anteil weibliche Parlamentsabgeordnete", 
+      "Anteil Abgeordnete rechter christlicher Parteien", 
+      "Anteil Abgeordnete linker Parteien", 
+      "Anteil Gewerkschaftsmitglieder &lt;i&gt;(% Angestellten)&lt;/i&gt;", 
+      "Anteil Frauen an Erwerbstätigen", 
+      "Anteil Teilzeibeschäftigen an weiblichen Erbwerbstätigen", 
+      "Konstante"), 
+    no.space = TRUE, type = "html", out = "lm_table_2.html")
+```
+---
+class: center, middle 
+&lt;img src="figures/lm_table_2.png" style="width: 90%" /&gt;
+---
+class: inverse, middle
+#  Kommunikation von Ergebnissen 2
+---
+# ggplot2 und Word
+Visualisierungen, die mit `ggplot()` erstellt werden, werden im "Plots" Fenster unten rechts angezeigt. Dort kann der Plot mit *Export &gt; Save as Image* extern abgespeichert und dann einfach als Grafik in Word eingefügt werden. Die Größe kann in Word verändert werden, aber das Seitenverhältnis und die Auflösung sollte schon beim Export richtig definiert werden. 
+
+Zum Beispiel kann das Ergebnis dreier linearen Regressionsmodelle in einem Plot dargestellt werden. Zuerst erstellen wir die Regressionstabelle und dann auf Basis der drei Modelle die Visualisierung der Datenpunkten, Residuen und prognostizierten Werte. 
+
+```r
+lm_90_fempar &lt;- cws_data %&gt;% filter(year == 1990) %&gt;% lm(family_pub ~ fempar, data = .)
+lm_00_fempar &lt;- cws_data %&gt;% filter(year == 2000) %&gt;% lm(family_pub ~ fempar, data = .)
+lm_10_fempar &lt;- cws_data %&gt;% filter(year == 2010) %&gt;% lm(family_pub ~ fempar, data = .)
+
+stargazer(lm_90_fempar, lm_00_fempar, lm_10_fempar,
+    column.labels = c("Jahr = 1990", "Jahr = 2000", "Jahr = 2010"), 
+    dep.var.labels = c("öffentliche Ausgaben für Familienpolitik &lt;i&gt;(% BIP)&lt;/i&gt;"), 
+    covariate.labels = c("Anteil weibliche Parlamentsabgeordnete", "Konstante"),
+    type = "html", out = "lm_fempar.html")
+```
+---
+class: center, middle 
+&lt;img src="figures/lm_fempar.png" style="width: 90%" /&gt;
+---
+# ggplot2 und Word
+Für die Visualisierung müssen wir zuerst mit `augment()` die Residuen und prognostizierten Werte berechnen. Dann bilden wir ein gemeinsames Dataframe mit `bind_rows()`, das der Input für `ggplot()` ist. Mit `facet_wrap()` werden drei einzelne Plots in einer Visualisierung erstellt.
+
+```r
+library(broom)
+lm_90_aug &lt;- augment(lm_90_fempar) %&gt;% mutate(year = 1990)
+lm_00_aug &lt;- augment(lm_00_fempar) %&gt;% mutate(year = 2000)
+lm_10_aug &lt;- augment(lm_10_fempar) %&gt;% mutate(year = 2010)
+lm_aug &lt;- bind_rows(lm_90_aug, lm_00_aug, lm_10_aug)
+
+ggplot(lm_aug , aes(x=fempar, y=family_pub)) +
+  geom_segment(aes(xend = fempar, y = family_pub, yend = .fitted), colour = "red") +
+  geom_point() + 
+  geom_line(aes(x=fempar, y=.fitted)) +
+  facet_wrap( ~ year, nrow = 3, ncol =1) +
+  labs(title = "Lineare Regression",
+             x = "Anteil weibliche Parlamentsabgeordnete",
+             y = "öffentliche Ausgaben für Familienpolitik (% BIP)")
+```
+---
+# ggplot2 und Word
+Die Visualisierung erscheint unten rechts im "Plots" Fenster. Die Grafik kann nun extern gespeichert werden mit Klick auf *Export &gt; Save as Image*. Hier kann auch die Größe in Pixel festgelegt werden. Welche Größe für das Word-Dokument passend ist, muss ausprobiert werden. Die aktuelle Grafik speichern wir als DIN A5 mit 72 ppi ab (420 x 595) (Tabelle mit Größen in Pixeln: https://www.din-formate.de/reihe-a-din-groessen-mm-pixel-dpi.html).
+
+Alternativ kann im R Skript `ggsave()` genutzt werden. Der Vorteil ist, dass in `ggsave()` mit `units = c("in", "cm", "mm")` die Einheit und mit `dpi = ` die Auflösung festgelegt werden kann. *Wenn in `ggsave()` kein Inputobjekt angegeben wird, dann wird der letzte Plot abgespeichert*.
+
+```r
+ggsave("figures/plot_lm_fempar.png",
+       width = 148  , height = 210,
+       units = "mm", dpi = 300)
+```
+Die Grafikdatei kann dann einfach mit Drag and Drop in Word hineingezogen oder mit *Einfügen &gt; Bilder &gt; Dieses Gerät* in das Word-Dokument eingefügt werden. Falls die Größe nicht richtig passt, muss die Höhe und Breite in `ggsave()` geändert und die Funktion wiederholt werden.
+---
+class: center, middle 
+&lt;img src="figures/plot_lm_fempar.png" style="width: 60%" /&gt;
+---
+class: inverse, middle 
+# R Markdown
+## kurze Einführung
+---
+# R Markdown
+Um die Ergebnisse eines Projektes in Word zu berichten, müssen wir leider eine paar Zwischenschritte machen (Tabellen in html abspeichern; Plots extern speichern und in Word einfügen). RStudio bietet mit R Markdown eine gute Alternative die Ergebnisse und den Bericht in einem Dokument zu erstellen. 
+
+R Markdown empfiehlt sich für kurze Projektberichte, insbesondere wenn der R Code angezeigt werden soll. Für Dokumente mit mehr Text als Tabellen / Grafiken ist Word oder Latex einfacher. Alle Folien des R Kurses sowie die Lösungen für die Übungen wurden mit R Markdown erstellt. 
+---
+# R Markdown
+## erste Schritte
+
+Für ein neues R Markdown Dokument klicken Sie in RStudio auf *File &gt; New File &gt; R Markdown*. Im Fenster kann dann der Titel und der Autor_innennamen festgelegt werden. Als Output kann html, pdf oder Word gewählt werden:
+
+* html funktioniert ohne vorherige Anpassungen und ist auch der Standard.
+* Für ein pdf-Dokument muss entweder Latex installiert sein oder das Paket *TinyTex* in R. *TinyTex*  muss nur einmal installiert und nicht extra geladen werden. Mehr Infos: https://yihui.org/tinytex/
+
+```r
+install.packages('tinytex')
+tinytex::install_tinytex()
+
+# to uninstall TinyTeX, run tinytex::uninstall_tinytex() 
+```
+---
+# R Markdown
+Es öffnet sich dann ein Beispieldokument, das schon mal grob zeigt wie ein Markdown Skript funktioniert.
+
+Am Anfang des Dokumentes befinden sich die Metadaten des Dokuments (YAML); 
+```
+---
+title: "Bericht"
+author: "Felix Wohlgemuth"
+date: "19 6 2020"
+output: pdf_document
+---
+```
+In diesem Fall wir ein pdf Dokument erstellt. Der `output` kann aber auch ein html-Dokument sein. Meine Lösungen der Übungen waren zB einfache html-Dokumente. 
+---
+# Markdown Sprache
+Markdown ist eine vereinfachte Auszeichnungssprache mit eigenen Regeln. Das Aussehen des Texts wird in Word mit Einstellungen im Menü bearbeitet. In Markdown wird das Aussehen direkt im Text festgelegt.
+
+Überschriften werden mit ` # ` festgelegt
+```
+# Ebene 1
+## Ebene 2
+### Ebene 3
+...
+...
+```
+# Ebene 1
+## Ebene 2
+### Ebene 3
+---
+# Markdown Sprache
+## Text
+**fett** wird mit `**TEXT**` festgelegt
+
+*kursiv* wird mit `*TEXT*`festgelegt
+
+~~durchgestrichen~~ wird mit `~~TEXT~~` festgelegt
+```
+***fett**
+**kursiv*
+*~~durchgestrichen~~
+```
+
+---
+# Markdown Sprache
+### Listen
+* Listen werden mit `*`, `+` oder `-` vor der Zeile festgelegt  
+* nummerierte Liste werden mit `1.`, `2.`... festgelegt (die Zahl ist eigentlich egal, weil Markdown selbst nummeriert)
+
+```
+1. erstes Item
+2. zweites Item
+4. drittes Item
+  * wenn eine ein Listenabsatz eingerückt wird, wird daraus eine Subliste
+  + es ist egal ob *, +, - genutz wird
+- ungeordnetes Item
+```
+
+1. erstes Item
+2. zweites Item
+4. drittes Item
+  * wenn eine ein Listenabsatz eingerückt wird, wird daraus ein Sublisten Item
+  + es ist egal ob +, +, - genutz wird
+- ungeordnetes Item
+---
+# Markdown Sprache
+### Tabellen
+Für Tabellen gibt es ein einfaches Format:
+```
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+|zebra stripes| are neat  |    $1                  |
+```
+Die Leerzeichen sind egal, hauptsache die `|` sind an der richtigen Stelle und in der zweiten Zeile wurde mindestens ein `-` zwischen den `|` verwendet.
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+---
+# Markdown Sprache
+### Codes / Skripte
+Das wichtigste für R Markdown sind die Code Chunks (im Beispiel Dokument sind schon drei Code Chunks mit unterschiedlichen Spezifikationen inkludiert). Code Chunks in R starten mit ` ```{r} ` und enden mit ` ``` `
+````markdown
+```{r}
+library(tidyverse)
+library(readxl)
+cws_data &lt;- read_excel("_raw/CWS-data-2020.xlsx")
+```
+````
+
+Alles was innerhalb ` ```{r} ` CODE ` ``` ` geschrieben wird, führt R aus und zeigt den Code sowie den Output. Wenn innerhalb der Klammer `{r, echo = FALSE}` definiert wird, dann wird nur der Output ohne den Code angezeigt.
+---
+# R Markdown Setup
+Am Anfang der R Markdown Datei befindet sich das YAML zwischen zwei `---`. 
+
+Im Beispieldokument befindet sich an zweiter Stelle ein R Code Chunk, der das Verhalten aller folgenden Chunks definiert:
+
+````markdown
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE)
+```
+````
+Die Optionen legen fest, dass
+* der R Code im Dokument nicht angezeigt wird (`echo = FALSE`).
+* keine Warn- und andere Meldungen angezeigt werden (`warning = FALSE, message = FALSE`).
+---
+# R Markdown
+Auf moodle befindet sich ein fertiges R Markdown Skript mit Berechnungen und Grafiken der letzten Sitzung. Das Format von R Markdown Dokumenten ist `.Rmd` und kann in R Studio mit `Open File...` geöffnet werden.
+
+
+### Output / Dokument erstellen
+Um den Output (pdf, html oder doc) zu erstellen, muss auf der Menüleiste über dem Skriptfenster auf **"Knit"** geklickt werden. Sie werden dann gefragt, in welchem Ordnern und unter welchem Namen die Datei gespeichert werden soll. hmtl-Dokumente werden ohne Problem erstellt. Für Pdfs wird entweder Latex benötigt oder das Paket TinyTex. 
+---
+# R Markdown
+## Cheatsheets
+
+Cheatsheet für die Sprache Markdown: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+
+Cheatsheet für R Markdown mit Code Chunks Optionen: https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf 
+
+Infos zu den YAML Optionen: https://bookdown.org/yihui/bookdown/yaml-options.html
+
+Sehr gute Präsentation zu R Markdown mit Übungsaufgaben: https://apreshill.github.io/rmd4cdc/
+
+R Markdown Homepage: https://rmarkdown.rstudio.com/ 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

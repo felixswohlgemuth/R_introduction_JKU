@@ -1,0 +1,122 @@
+---
+title: "Projektbericht"
+author: "Felix Wohlgemuth"
+date: "19 6 2020"
+output: 
+  pdf_document  
+tables: true
+header-includes:
+   - \usepackage{floatrow}
+   - \floatsetup[figure]{capposition=top}
+   - \floatsetup[table]{capposition=top}
+   - \usepackage{dcolumn}
+   - \floatplacement{figure}{H} 
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE)
+```
+## Einleitung
+Hier sollte das Phänomen beschrieben werden. In diesem Fall wären es die Unterscheide zwischen den OECD Mitgliedsländern in den öffentliche Sozialausgaben für Familienpolitik. Als mögliche Erklärung der Unterschiede könnte der unterschiedliche Anteil der weiblichen Parlamentsabgeordneten dargestellt werden. Im nächsten Schritt sollte die Forschungsfrage erläutert werden und kurz die Struktur des Dokuments. Ein Statement (1-2 Paragrafen) über die Motivation bzw. Signifikanz der Forschungsfrage ist auch wichtig.
+
+## Forschungsstand / Theorie
+Der zweite Teil sollte das Ergebnis der Literaturrecherche darstellen. Also die relevante  Literatur und deren Bezug zum Thema diskutieren. Inwiefern bezweifelt die eigene Arbeit bestehende Studien, untermauert oder erweitert Ergebnisse/Argumente bestehender Studien?  Auf  welche  wissenschaftlichen  Debatten  oder  Argumente und Theorien bezieht sich die Arbeit?
+
+### Hypothesen
+Im Fall einer quantitativen Analyse kann mit Hypothesen gearbeitet werden. Diese können aus der Theorie abgeleitet werden.
+
+## Forschungsstrategie / Methode
+Hier sollte das Vorgehen der Analyse erläutert werden. Also in diesem Fall die Begründung für die Auswahl der Daten aus dem Comparative Welfare State Dataset. Weiter sollte die Auswahl der Variablen erläutert werden und wie diese das Phänomen operationalisieren.
+
+```{r preliminary}
+# preliminaries:
+library(tidyverse)
+library(readxl)
+cws_data <- read_excel("_raw/CWS-data-2020.xlsx")
+```
+
+```{r var-preparation}
+# optional variable preparation
+cws_data <- cws_data %>% 
+  mutate(fem_employment = 100 * (flabfo / tlabfo))
+```
+
+```{r desciptives, results='asis', fig.cap='Beschreibung Variablen (Jahr 1990)'}
+library(papeR)
+library(xtable)
+
+cws_data_short  <- cws_data %>% 
+  filter(year %in% c(1990)) %>% 
+  select(family_pub, socx_pub, fempar, rtcrseat, leftseat, ud, fem_employment, ptemp_f) %>% 
+  as.data.frame()
+
+knitr::kable(summarize_numeric(cws_data_short, type = "numeric", variable.labels = c(
+      "öffentl. Familienpolitikausgaben (% BIP)", 
+      "öffentl. Sozialausgaben (% BIP)", 
+      "weibl. Parlamentsabgeordnete (%)", 
+      "Abgeordnete rechter christlicher Parteien (%)", 
+      "Abgeordnete linker Parteien (%)", 
+      "Gewerkschaftsmitglieder (%)",
+      "weibl. Erwerbstätige (%)", 
+      "weibl. Teilzeibeschäftige (%)"),
+      count = FALSE),
+      format = "pandoc",
+      caption = "Beschreibung Variablen (Jahr 1990)")
+```
+
+## Analyseergebnisse
+Hier sollten die Ergebnisse der Analyse erläutert werden. Im Fall einer Regression die Regressionstabelle und eventuell übersichtliche Plots. Die Ergebnisse sollte im Bezug zu der Hypothese gesetzt werden.
+
+```{r plot-smooth, fig.cap='Lineare Regression (Jahr 1990)'}
+  ggplot(cws_data_short, aes(x = fempar, y = family_pub)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "weibl. Parlamentsabgeordnete (%)",
+        y = "öffentl. Familienpolitikausgaben (% BIP)")
+```
+
+```{r regression}
+library(jtools)
+lm_90 <- lm(family_pub ~ socx_pub +  fempar + rtcrseat + leftseat + ud + fem_employment + ptemp_f, data = cws_data_short)
+
+export_summs(lm_90, error_format = "({std.error})",
+             model.names = c("öffentl. Familienpolitikausgaben (% BIP)"),
+             coefs = c(
+      "öffentl. Sozialausgaben (% BIP)" = "socx_pub", 
+      "weibl. Parlamentsabgeordnete (%)" = "fempar", 
+      "Abgeordnete rechter christlicher Parteien (%)" = "rtcrseat", 
+      "Abgeordnete linker Parteien (%)" = "leftseat", 
+      "Gewerkschaftsmitglieder (%)" = "ud",
+      "weibl. Erwerbstätige (%)" = "fem_employment", 
+      "weibl. Teilzeibeschäftige (%)" = "ptemp_f",
+      "Konstante" = "(Intercept)"),
+      note = "{stars}. Standardfehler in Klammern",
+      error_pos = "same") %>% 
+  huxtable::set_caption(., "Ergebnisse Lineare Regression")
+```
+
+Ein weiterer Vorteil von R Markdown ist, dass auch im Text ohne Code Chunks kleine Berechnungen gemacht oder R Objekte aufgerufen werden können. Wenn sich die Daten ändern, ändert sich auch der Output ohne das der Code nochmal neu geschrieben werden muss. ZB kann der signifikante Regressionskoeffizient des Anteils der Gewerkschaftsmitglieder von `r round(lm_90[["coefficients"]][["ud"]], 2)` direkt im Text angezeigt werden.
+ 
+
+```{r regression-plot, fig.cap='Ergebnisse Lineare Regression'}
+plot_summs(lm_90, plot.distributions = TRUE, 
+    coefs = c(
+    "öffentl. Sozialausgaben (% BIP)" = "socx_pub", 
+    "weibl. Parlamentsabgeordnete (%)" = "fempar", 
+    "Abgeordnete rechter christlicher Parteien (%)" = "rtcrseat", 
+    "Abgeordnete linker Parteien (%)" = "leftseat", 
+    "Gewerkschaftsmitglieder (%)" = "ud",
+    "weibl. Erwerbstätige (%)" = "fem_employment", 
+    "weibl. Teilzeibeschäftige (%)" = "ptemp_f"))
+```
+
+## Schlussbemerkung
+Folgende Fragen könnten in der Schlussbemerkung diskutiert werden:
+
+* Wurden die Hypothesen bestätigt oder widerlegt? 
+* Was könnten mögliche nächste Schritte sein?
+* Wie hat die Arbeit zu der existierenden Literatur beigetragen?
+
+## Literaturverzeichnis
