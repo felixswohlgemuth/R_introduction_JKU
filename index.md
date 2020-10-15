@@ -41,5 +41,3 @@ Seminarplan [pdf](./20_SS_Seminarplan_Politikfelder_Familienpolitik.pdf)
 [Folien](./14_RStats_Folien/14_R_Kommunikation_Ergebnisse_2.html)  
 [RMarkdown Beispiel](./14_RStats_Folien/14_R_Kommunikation_Ergebnisse_RMarkdown.Rmd)  
 [pdf Beispiel](./14_RStats_Folien/14_R_Kommunikation_Ergebnisse_RMarkdown.pdf)
-
-TEST
